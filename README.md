@@ -1,75 +1,45 @@
-# Nuxt Minimal Starter
+# P2HACKS2025 アピールシート
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+## プロダクト名
+ここにはプロダクト名を書きます。ロゴなどがあれば、それを貼ってもよいです。読み仮名もあると親切です。
 
-## Setup
+## コンセプト
+ここにはプロダクトのコンセプトを書きます。プロダクトの本質的な考え方、発想などを一文か二文で簡潔にまとめるとよいです。
 
-Make sure to install dependencies:
+## 対象ユーザ
+ここにはプロダクトがターゲットにしているユーザーを書きます。
+対象としているユーザーの悩みは何でしょうか？どのようなことを楽しみに生きている人でしょうか？潜在的に抱えている問題は？いろいろと考えてみるとよいでしょう。
+属性を具体的に書いてもよいです。
 
-```bash
-# npm
-npm install
+## 利用の流れ
+プロダクトを起動したり、ランディングした時やその後の流れを書きます。
+手順書のようなものではなくてもよいですが、読んだらプロダクトの使い方がわかるものがよいです。
+必要に応じて、プロダクトを知るまでの流れも書いてよいでしょう。
 
-# pnpm
-pnpm install
+## 推しポイント
+ここにはプロダクトの推しポイントを書きます。
+なぜそのプロダクトはほかのプロダクトより優れているのでしょうか？他のプロダクトにはない特徴は何でしょうか？ほかでもないそのプロダクトによってユーザーはどのような嬉しさを得ますか？
 
-# yarn
-yarn install
+## スクリーンショット(任意)
+ここにはスクリーンショットを貼ります。そのままでもよいですし、画像を編集しておしゃれにしてもよいです(全くの捏造というのはしないでください)。GitHubのエディタに画像をドロップ&ドロップすると張り付きます。
 
-# bun
-bun install
-```
+## 開発体制
 
-## Development Server
+### 役割分担
+ここには開発体制を書きます。誰が何をしましたか？役職名を付けるか、担当した領域（バックエンド、フロントエンド、デザイン、発表資料作成、など）を書いてください。一人が複数を兼任する場合もあるでしょう。
 
-Start the development server on `http://localhost:3000`:
+### 開発における工夫した点
+開発における工夫した点を書いてください。チーム開発における工夫、技術的な工夫、スケジュール管理の工夫など、どのようなことでもよいです。
 
-```bash
-# npm
-npm run dev
+## 開発技術
 
-# pnpm
-pnpm dev
+### 利用したプログラミング言語
+- ここには利用したプログラミング言語を書きます。
+- ハイフン+スペースを最初に書くと箇条書きになります。
 
-# yarn
-yarn dev
+### 利用したフレームワーク・ライブラリ
+- ここには利用したフレームワークやライブラリを書きます。
 
-# bun
-bun run dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+### その他開発に使用したツール・サービス
+- ここにはその他開発に使用したツールやサービスを書きます。
+- 例: GitHub, Figma, Canva, ChatGPT など

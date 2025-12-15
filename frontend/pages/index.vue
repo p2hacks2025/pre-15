@@ -5,27 +5,66 @@
       <NuxtLink to="/new">新しい投稿をする</NuxtLink>
     </p>
 
-    <div class="post-list">
-      <div class="post-item">
-        <h3>初めての投稿です！</h3>
-        <p>
-          開発お疲れ様です。これが記念すべき最初の投稿になります。
-          早くデータ保存機能を作って、本当に書き込めるようにしたいですね！
-        </p>
-        <small>投稿日時: 2025-12-14 16:35</small>
-      </div>
+    <p v-if="pending">データを読み込み中です...</p>
 
-      <div class="post-item">
-        <h3>進捗報告</h3>
-        <p>フロントエンドの環境構築が完了しました。次はバックエンドの選定とAPI連携に入ります。</p>
-        <small>投稿日時: 2025-12-14 16:30</small>
-      </div>
+    <p v-if="error">投稿データの読み込み中にエラーが発生しました: {{ error.message }}</p>
 
+    <div v-else-if="posts.length > 0" class="post-list">
+      <div v-for="post in posts" :key="post.id" class="post-item">
+        <h3>{{ post.title }}</h3>
+        <p>{{ post.body }}</p>
+        <small>投稿日時: {{ formatTimestamp(post.createdAt) }}</small>
+      </div>
     </div>
+    
+    <p v-else>まだ投稿がありません。</p>
+
   </div>
 </template>
 
+<script setup>
+import { collection, getDocs, orderBy, query } from 'firebase/firestore';
+
+// NuxtAppのインスタンスから$firestoreを呼び出す
+const { $firestore } = useNuxtApp();
+
+// データを読み込み、管理するためのリアクティブな変数
+// useAsyncDataは、サーバーサイドでも動作し、データの取得状態（pending, error, data）を管理します。
+const { data: posts, pending, error, refresh } = useAsyncData(
+  'posts', // データのキャッシュキー
+  async () => {
+    // 投稿データを取得
+    const postsCollection = collection($firestore, 'posts');
+    
+    // createdAtの降順（新しい順）でデータを取得するクエリ
+    const q = query(postsCollection, orderBy('createdAt', 'desc'));
+    
+    const querySnapshot = await getDocs(q);
+    
+    // 取得したデータを整形して、posts変数に格納
+    return querySnapshot.docs.map(doc => {
+      // ドキュメントIDとデータ本体を結合
+      return { id: doc.id, ...doc.data() };
+    });
+  }
+);
+
+// Firebase Timestampオブジェクトを整形するヘルパー関数
+const formatTimestamp = (timestamp) => {
+  if (!timestamp) return '不明';
+  // FirebaseのTimestampオブジェクトからJavaScriptの日付オブジェクトに変換
+  return timestamp.toDate().toLocaleString('ja-JP', { 
+    year: 'numeric', month: '2-digit', day: '2-digit', 
+    hour: '2-digit', minute: '2-digit' 
+  });
+};
+
+// 投稿後に画面を更新するためのリフレッシュ機能（後のステップで使います）
+defineExpose({ refresh });
+</script>
+
 <style scoped>
+/* スタイルは前回のものと同じです */
 .post-list {
   margin-top: 20px;
   border-top: 1px solid #ccc;

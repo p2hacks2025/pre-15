@@ -63,7 +63,7 @@ const authenticate = async () => {
     }
 
     message.value = isLogin.value ? 'ログインに成功しました！' : '新規登録に成功しました！';
-    router.push('/');
+    router.push('/timeline');
 
   } catch (err) {
     isError.value = true;

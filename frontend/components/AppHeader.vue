@@ -6,16 +6,50 @@
       </NuxtLink>
       
       <nav class="auth-nav">
-        <NuxtLink to="/new" class="btn-new">新規投稿</NuxtLink>
+        <template v-if="isAuthReady">
+          
+          <div v-if="isLoggedIn" class="user-status">
+            <span class="user-info">
+              ログイン中: {{ user?.email }}
+            </span>
+            <button @click="handleLogout" class="btn-logout">
+              ログアウト
+            </button>
+          </div>
+          
+          <NuxtLink v-else to="/auth" class="btn-login">
+            ログイン / 新規登録
+          </NuxtLink>
+
+        </template>
+        <span v-else>
+          認証情報を読み込み中...
+        </span>
       </nav>
     </div>
   </header>
 </template>
 
 <script setup>
-// ★★★ useAuthUser や signOut のインポートはすべて削除 ★★★
-// <script setup> 内は空にします。
+import { useAuthUser } from '../composables/useAuthUser';
+import { signOut } from 'firebase/auth'; 
 
+// 認証状態を取得
+const { user, isLoggedIn, isAuthReady } = useAuthUser();
+const router = useRouter();
+const { $auth } = useNuxtApp();
+
+// ログアウト処理
+const handleLogout = async () => {
+  try {
+    await signOut($auth);
+    router.push('/');
+    alert('ログアウトしました。');
+  } catch (e) {
+    console.error('ログアウトエラー:', e);
+    alert('ログアウト中にエラーが発生しました。');
+  }
+};
 </script>
 
 <style scoped>
@@ -43,14 +77,26 @@
   display: flex;
   align-items: center;
 }
-.btn-new {
+.user-status {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+.user-info {
+  font-size: 0.9em;
+  margin-right: 10px;
+}
+.btn-logout, .btn-login {
   padding: 8px 15px;
-  background-color: #007bff;
+  background-color: #f44336;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   text-decoration: none;
   font-size: 0.9em;
+}
+.btn-login {
+  background-color: #007bff;
 }
 </style>

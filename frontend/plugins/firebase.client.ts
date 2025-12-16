@@ -2,7 +2,7 @@
 
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-// import { getAuth } from "firebase/auth"; <--- 削除
+import { getAuth } from "firebase/auth";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -18,14 +18,14 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-// const auth = getAuth(app); <--- 削除
+const auth = getAuth(app);
 
 // Nuxt アプリケーション全体で Firebase インスタンスを利用可能にする
 export default defineNuxtPlugin((nuxtApp) => {
     return {
         provide: {
             firestore: db,
-            // auth: auth, <--- 削除
+            auth: auth,
         },
     };
 });

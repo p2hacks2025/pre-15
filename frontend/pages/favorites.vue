@@ -2,8 +2,7 @@
   <div>
     <h1>自分がいいねした投稿一覧</h1>
     <p>
-      <NuxtLink to="/">← 投稿一覧に戻る</NuxtLink>
-    </p>
+        <NuxtLink to="/timeline">← 投稿一覧に戻る</NuxtLink>    </p>
 
     <div v-if="!isAuthReady">
       <p>認証情報を読み込み中です...</p>

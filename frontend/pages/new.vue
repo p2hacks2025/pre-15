@@ -2,8 +2,8 @@
   <div class="new-post-container">
     <h1>新しい投稿をする</h1>
     <p>
-      <NuxtLink to="/">← 投稿一覧に戻る</NuxtLink>
-    </p>
+    <NuxtLink to="/timeline">← 投稿一覧に戻る</NuxtLink> 
+</p>
 
     <form @submit.prevent="submitPost">
       

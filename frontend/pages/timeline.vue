@@ -5,15 +5,19 @@
       <NuxtLink to="/new">新しい投稿をする</NuxtLink>
     </p>
 
-    <p v-if="isUserLoggedIn()"> <NuxtLink to="/favorites">>> 自分がいいねした投稿を見る</NuxtLink>
+    <p v-if="isUserLoggedIn()">
+      <NuxtLink to="/favorites">>> 自分がいいねした投稿を見る</NuxtLink>
     </p>
 
     <p v-if="pending || !favoritesReady">データを読み込み中です...</p>
+    <p v-else-if="error">投稿データの読み込み中にエラーが発生しました: {{ error.message }}</p>
+
     <div v-else-if="posts && posts.length > 0" class="post-list">
       <div v-for="post in posts" :key="post.id" class="post-item">
-        <button 
+        <h3>{{ post.title }}</h3> <p>{{ post.body }}</p>    <button 
           @click="toggleFavorite(post.id)" 
-          :disabled="!isUserLoggedIn()" class="favorite-button"
+          :disabled="!isUserLoggedIn()"
+          class="favorite-button"
         >
           {{ favorites[post.id] ? '❤️ いいね済み' : '🤍 いいねする' }}
         </button>

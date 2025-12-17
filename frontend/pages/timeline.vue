@@ -1,9 +1,9 @@
 <template>
-  <div>
-    <h1>掲示板 投稿一覧</h1>
-    <p>
-      <NuxtLink to="/new">新しい投稿をする</NuxtLink>
-    </p>
+  <div class="page-container">
+    <h1 class="page-switch-button">掲示板 投稿一覧</h1>
+    <NuxtLink to="/new" class="floating-button">
+      <img src="/images/newpost-icon.png" alt="新規投稿" />
+    </NuxtLink>
 
     <p v-if="isUserLoggedIn()">
       <NuxtLink to="/favorites">>> 自分がいいねした投稿を見る</NuxtLink>
@@ -19,14 +19,14 @@
           :disabled="!isUserLoggedIn()"
           class="favorite-button"
         >
-          {{ favorites[post.id] ? '❤️ いいね済み' : '🤍 いいねする' }}
+          {{ favorites[post.id] ? '❤️' : '🤍' }}
         </button>
         
-        <small>投稿日時: {{ formatTimestamp(post.createdAt) }}</small>
+        <small>{{ formatTimestamp(post.createdAt) }}</small>
       </div>
     </div>
     
-    <p v-else>まだ投稿がありません。</p>
+    <p v-else>トキメキはまだ届いていません</p>
 
   </div>
 </template>
@@ -178,5 +178,87 @@ const isUserAuthReady = () => getAuth().isAuthReady.value;
 </script>
 
 <style scoped>
-/* スタイルは省略。必要に応じて追加してください。 */
+.page-container {
+  /* 背景画像の設定 */
+  background-image: url('/images/background-simple.png'); /* 画像のパス */
+  
+  /* 背景画像を画面いっぱいに広げ、固定する設定 */
+  background-size: cover;           /* 画面全体を覆う */
+  background-position: center;      /* 中央合わせ */
+  background-attachment: fixed;     /* スクロールしても背景は動かない */
+  background-repeat: no-repeat;     /* 繰り返し禁止 */
+  
+  /* 最小の高さを画面いっぱいに */
+  min-height: 100vh;
+  /* padding: 20px;*/
+}
+/*.page-switch-button{
+  background:#bbb
+}:/
+/*新規作成ぼたん*/
+.floating-button {
+  position: fixed;     /* 画面に対して固定位置にする */
+  bottom: 30px;        /* 下から30px */
+  right: 30px;         /* 右から30px */
+  z-index: 1000;       /* 他の要素より上に表示する */
+  transition: transform 0.2s; /* ホバー時のアニメーション用 */
+}
+
+/* 画像のサイズ調整 */
+.floating-button img {
+  width: 80px;         /* お好みのサイズに調整してください */
+  height: 80px;
+  cursor: pointer;
+  /* 画像に影をつけると背景に埋もれず目立ちます */
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+}
+
+/* マウスを乗せた時に少し大きくする演出 */
+.floating-button:hover {
+  transform: scale(1.1);
+}
+/* 1. コンテナ全体のスタイル：中央に寄せる */
+.post-list {
+  max-width: 600px;    /* 投稿の最大横幅を制限 */
+  margin: 0 auto;      /* 上下0、左右を自動計算（これで中央に寄る） */
+  padding: 20px;       /* 端に少し余白を作る */
+}
+
+/* 2. 各投稿カードのスタイル */
+.post-item {
+  white-space: pre-wrap;
+  background-color: #D9D9D9;
+  border: 1px solid #ccc;
+  border-radius: 20px;  /* 角を丸く */
+  padding: 20px;
+  margin-bottom: 20px; /* 投稿ごとの間隔 */
+  text-align: left;    /* 文章自体は左揃えにする（読みやすさのため） */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* 軽い影をつけて浮かせる */
+}
+
+/* 3. タイトルなどの装飾 */
+h3 {
+  margin-top: 0;
+  color: #333;
+}
+
+/* 4. いいねボタンの見た目 */
+.favorite-button {
+  background: white;
+  border: 1px solid #ff4d4f;
+  color: #ff4d4f;
+  padding: 5px 15px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.favorite-button:hover {
+  background: #fff1f0;
+}
+
+.favorite-button:disabled {
+  border-color: #ccc;
+  color: #ccc;
+  cursor: not-allowed;}
 </style>

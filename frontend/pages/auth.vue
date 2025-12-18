@@ -1,24 +1,24 @@
 <template>
   <div class="auth-container">
     <h1>{{ isLogin ? 'ログイン' : '新規登録' }}</h1>
-    
+
     <div class="form-wrapper">
       <form @submit.prevent="authenticate">
         <div class="form-group">
           <label for="email">メールアドレス</label>
           <input type="email" id="email" v-model="email" required>
         </div>
-        
+
         <div class="form-group">
           <label for="password">パスワード</label>
           <input type="password" id="password" v-model="password" required>
         </div>
-        
+
         <button type="submit" :disabled="isLoading">
           {{ isLoading ? '処理中...' : (isLogin ? 'ログイン' : '登録') }}
         </button>
       </form>
-      
+
       <p class="toggle-mode">
         {{ isLogin ? 'アカウントをお持ちでない方へ' : 'すでにアカウントをお持ちの方へ' }}
         <a href="#" @click.prevent="isLogin = !isLogin">
@@ -35,15 +35,15 @@
 
 <script setup>
 import { ref } from 'vue';
-import { 
-  createUserWithEmailAndPassword, 
-  signInWithEmailAndPassword,     
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
 } from 'firebase/auth';
 
 const { $auth } = useNuxtApp();
 const router = useRouter();
 
-const isLogin = ref(true); 
+const isLogin = ref(true);
 const email = ref('');
 const password = ref('');
 const isLoading = ref(false);
@@ -68,7 +68,7 @@ const authenticate = async () => {
   } catch (err) {
     isError.value = true;
     let errorMessage = '認証中にエラーが発生しました。';
-    
+
     switch (err.code) {
       case 'auth/invalid-email':
       case 'auth/user-not-found':
@@ -89,7 +89,4 @@ const authenticate = async () => {
 };
 </script>
 
-<style scoped>
-/* スタイルは省略 */
-/* ... */
-</style>
+<style scoped></style>

@@ -92,13 +92,13 @@ const text_backgrounds = [
   { id: 1, type: 'color', color: '#FBF8EF' },
   { id: 2, type: 'color', color: '#FFF0D9' },
   { id: 3, type: 'color', color: '#F5F5F5' }
-  // 将来的に { type: 'image', url: '/images/bg1.jpg' } のように画像を追加できます
+  // { type: 'image', url: '/images/bg1.jpg' }
 ];
 
 // 選択中の背景インデックス
 const bgIndex = ref(0);
 
-// 現在の背景スタイル（sticky-note 用）
+// 背景スタイル（sticky-note）
 const currentBgStyle = computed(() => {
   const b = text_backgrounds[bgIndex.value] || text_backgrounds[0];
   if (b.type === 'image' && b.url) {
@@ -111,7 +111,7 @@ const currentBgStyle = computed(() => {
   return { backgroundColor: b.color };
 });
 
-// 指定インデックスの背景スタイル（サムネイル用）
+// 背景スタイル（下のサムネイル）
 const bgStyle = (i) => {
   const idx = Number(i) % text_backgrounds.length;
   const b = text_backgrounds[idx] || text_backgrounds[0];
@@ -125,13 +125,13 @@ const bgStyle = (i) => {
   return { backgroundColor: b.color };
 };
 
-// 計算された周辺インデックス（prev2, prev1, next1, next2）
+// サムネイル用計算
 const prev2Index = computed(() => (bgIndex.value - 2 + text_backgrounds.length) % text_backgrounds.length);
 const prev1Index = computed(() => (bgIndex.value - 1 + text_backgrounds.length) % text_backgrounds.length);
 const next1Index = computed(() => (bgIndex.value + 1) % text_backgrounds.length);
 const next2Index = computed(() => (bgIndex.value + 2) % text_backgrounds.length);
 
-// スワイプ（タッチ/ポインタ）ハンドラ
+// 左右矢印
 const touchStartX = ref(null);
 const onPointerDown = (e) => {
   touchStartX.value = e.clientX;
@@ -164,7 +164,7 @@ const handleSwipe = (dx) => {
   }
 };
 
-// 矢印ボタン用のハンドラ
+// 矢印用のハンドラ
 const prevBg = () => {
   bgIndex.value = (bgIndex.value - 1 + text_backgrounds.length) % text_backgrounds.length;
 };
@@ -224,7 +224,6 @@ const submitPost = async () => {
   margin: 20px auto;
   padding: 18px 12px 20px;
   background-color: transparent;
-  /* コンテナは透明 */
   display: flex;
   flex-direction: column;
   min-height: calc(100vh - 40px);
@@ -248,11 +247,9 @@ const submitPost = async () => {
 .sticky-note {
   display: block;
   margin: 0 auto;
-  /* 中央に配置 */
   width: min(80vw, 320px);
   /* 画面幅に応じて最大320px */
   aspect-ratio: 1 / 1;
-  /* 正方形を保つ（小さい画面で解除） */
   max-height: 60vh;
   background-color: #FBF8EF;
   border: 1px solid #FFB433;
@@ -280,7 +277,6 @@ const submitPost = async () => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* 横中央に揃える */
   gap: 12px;
 }
 
@@ -434,7 +430,6 @@ const submitPost = async () => {
   z-index: 60;
 }
 
-/* When the warning is visible, make the close button part of the normal flow and push the warning below it */
 .new-post-container>form.has-warning .close-btn {
   position: relative;
   top: auto;
@@ -504,7 +499,7 @@ const submitPost = async () => {
   margin-top: 15px;
 }
 
-/* 警告ボックスのスタイル (Step 53で追加) */
+/* 警告ボックスのスタイル */
 .warning-box {
   padding: 10px;
   background-color: #ffe0b2;
@@ -542,7 +537,6 @@ const submitPost = async () => {
   object-fit: contain;
 }
 
-/* Additional responsive rules to ensure layout fits vertically */
 @media (max-height: 720px) {
   .new-post-container {
     padding-top: 14px;

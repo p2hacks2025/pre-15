@@ -11,14 +11,20 @@
         <NuxtLink to="/auth">ログイン/登録はこちら</NuxtLink>
       </div>
 
-      <div class="form body-wrapper">
-        <textarea id="body" class="sticky-note" v-model="body" :disabled="!isLoggedIn || isSubmitting"
-          required></textarea>
+      <!-- テキスト入力エリア -->
+      <div class="form-group body-wrapper" style="position: relative;">
+        <textarea id="body" class="sticky-note" v-model="body" required
+          :disabled="!isLoggedIn || isSubmitting"></textarea>
+
+        <!-- 共有ボタン（現状は機能なし） -->
+        <button type="button" class="share-btn" aria-label="共有ボタン" @click="console.log('共有ボタン押下')">共有</button>
       </div>
 
-      <button type="submit" :disabled="!isLoggedIn || isSubmitting">
-        {{ isSubmitting ? '投稿中...' : '投稿する' }}
-      </button>
+      <div class="submit-wrapper">
+        <button type="submit" :disabled="!isLoggedIn || isSubmitting" class="primary-btn">
+          {{ isSubmitting ? '投稿中...' : '投稿する' }}
+        </button>
+      </div>
     </form>
 
     <p v-if="successMessage" class="message success">{{ successMessage }}</p>
@@ -109,7 +115,7 @@ const submitPost = async () => {
 
 /* 投稿フォームのコンテナ */
 .new-post-container {
-  max-width: 350px;
+  max-width: 400px;
   margin: 40px auto;
   padding: 20px;
   background-color: #f9f9f9;
@@ -132,8 +138,8 @@ const submitPost = async () => {
 }
 
 .sticky-note {
-  width: min(80vw, 100px);
-  /* 画面幅に応じて最大200px */
+  width: min(80vw, 300px);
+  /* 画面幅に応じて最大300px */
   aspect-ratio: 1 / 1;
   /* 正方形を保つ */
   background: #fff8b5;
@@ -150,30 +156,39 @@ const submitPost = async () => {
 }
 
 .body-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  /* 横中央 */
-  gap: 8px;
+  position: relative;
 }
 
-button[type="submit"] {
-  padding: 10px 20px;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  border-radius: 4px;
+.share-btn {
+  position: absolute;
+  left: 12px;
+  bottom: -12px;
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 6px 10px;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
   cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.3s;
 }
 
-button[type="submit"]:hover:not(:disabled) {
-  background-color: #45a049;
+.submit-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 18px;
 }
 
-button[type="submit"]:disabled {
-  background-color: #aaa;
+.primary-btn {
+  min-width: 180px;
+  padding: 10px 22px;
+  background: #4CAF50;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.primary-btn:disabled {
+  background: #aaa;
   cursor: not-allowed;
 }
 

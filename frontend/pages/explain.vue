@@ -1,13 +1,17 @@
 <template>
-    <div class="hero-container">
+    <div class="hero-container" @click="goTimeline" role="button" tabindex="0" @keyup.enter="goTimeline"
+        aria-label="タイムラインへ移動">
         <div class="content">
+            <h2 class="explain-text"><span>あなたのトキメキを</span><span>詩にしよう！</span></h2>
         </div>
     </div>
 </template>
 
 <script setup>
-// ロゴのパスを指定
-const logoUrl = "images/logo.png";
+const router = useRouter();
+const goTimeline = () => {
+    router.push('/timeline');
+};
 </script>
 
 <style scoped>
@@ -20,13 +24,31 @@ const logoUrl = "images/logo.png";
     background-size: auto 100vh;
     background-position: center top;
     background-repeat: no-repeat;
+    cursor: pointer;
 }
 
 .content {
     position: relative;
     z-index: 2;
     text-align: center;
-    color: #ffffff;
+    color: #000000;
+}
+
+.explain-text {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0;
+    padding: 0 1rem;
+    line-height: 1.25;
+}
+
+.explain-text span {
+    display: block;
+}
+
+.explain-text span+span {
+    margin-top: 0.25rem;
+    /* small gap between lines */
 }
 
 .logo-wrapper {

@@ -1,6 +1,10 @@
 <template>
   <div class="page-container">
-    <h1 class="page-switch-button">掲示板 投稿一覧</h1>
+    <header class="main-header">
+    <NuxtLink to="/" class="hanbargarbar">
+      <img src="/images/hanbargarbar-icon.png" alt="はんばーがーば" />
+    </NuxtLink>
+    </header>
     <NuxtLink to="/new" class="floating-button">
       <img src="/images/newpost-icon.png" alt="新規投稿" />
     </NuxtLink>
@@ -14,7 +18,7 @@
 
     <div v-else-if="posts && posts.length > 0" class="post-list">
       <div v-for="post in posts" :key="post.id" class="post-item">
-        <h3>{{ post.title }}</h3> <p>{{ post.body }}</p>    <button 
+        <p class="post-sentence">{{ post.body }}</p><button 
           @click="toggleFavorite(post.id)" 
           :disabled="!isUserLoggedIn()"
           class="favorite-button"
@@ -22,11 +26,11 @@
           {{ favorites[post.id] ? '❤️' : '🤍' }}
         </button>
         
-        <small>{{ formatTimestamp(post.createdAt) }}</small>
+        
       </div>
     </div>
-    
     <p v-else>トキメキはまだ届いていません</p>
+    <footer class="main-footer"></footer>
 
   </div>
 </template>
@@ -154,18 +158,6 @@ const toggleFavorite = async (postId) => {
   }
 };
 
-
-const formatTimestamp = (timestamp) => {
-  if (!timestamp) return '不明';
-  if (timestamp && typeof timestamp.toDate === 'function') {
-      return timestamp.toDate().toLocaleString('ja-JP', { 
-          year: 'numeric', month: '2-digit', day: '2-digit', 
-          hour: '2-digit', minute: '2-digit' 
-      });
-  }
-  return '日付取得エラー';
-};
-
 const refresh = () => {
     fetchAllPosts();
     fetchFavorites();
@@ -180,60 +172,86 @@ const isUserAuthReady = () => getAuth().isAuthReady.value;
 <style scoped>
 .page-container {
   /* 背景画像の設定 */
-  background-image: url('/images/background-simple.png'); /* 画像のパス */
-  
-  /* 背景画像を画面いっぱいに広げ、固定する設定 */
+  background-image: url('/images/background-2.png'); /* 画像のパス */
   background-size: cover;           /* 画面全体を覆う */
   background-position: center;      /* 中央合わせ */
   background-attachment: fixed;     /* スクロールしても背景は動かない */
   background-repeat: no-repeat;     /* 繰り返し禁止 */
   
-  /* 最小の高さを画面いっぱいに */
+  width: 100vw;          /* 画面の横幅いっぱいに固定 */
   min-height: 100vh;
-  /* padding: 20px;*/
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
 }
-/*.page-switch-button{
-  background:#bbb
-}:/
+
+.main-header {
+  /*background: #B4EBE6;*/
+  position: sticky;    /* スクロールしても上部に残る */
+  top: 0;
+  width: 100%;
+  z-index: 100;
+  /*border-bottom: 80px solid #B4EBE6;*/
+  margin-bottom: 20px;
+}
+.hanbargarbar{
+  width: 80px;         /* お好みのサイズに調整してください */
+  height: 80px;
+  top: 160px;
+  left: 60px; 
+}
+.main-footer {
+  position: sticky;    /* スクロールしても上部に残る */
+  bottom: 0;
+  width: 100%;
+  z-index: 100;
+  /*border-bottom: 130px solid #B4EBE6;*/
+}
+
+
 /*新規作成ぼたん*/
 .floating-button {
   position: fixed;     /* 画面に対して固定位置にする */
-  bottom: 30px;        /* 下から30px */
-  right: 30px;         /* 右から30px */
+  bottom: 40px;        /* 下からpx */
+  right: 40px;         /* 右からpx */
   z-index: 1000;       /* 他の要素より上に表示する */
   transition: transform 0.2s; /* ホバー時のアニメーション用 */
 }
 
-/* 画像のサイズ調整 */
+/* 投稿ボタン */
 .floating-button img {
   width: 80px;         /* お好みのサイズに調整してください */
   height: 80px;
   cursor: pointer;
-  /* 画像に影をつけると背景に埋もれず目立ちます */
+  /* 画像の影 */
   filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
 }
 
-/* マウスを乗せた時に少し大きくする演出 */
+/* マウスを乗せた時（タップしたとき）に少し大きくする演出 */
 .floating-button:hover {
   transform: scale(1.1);
 }
-/* 1. コンテナ全体のスタイル：中央に寄せる */
+/* 全体 */
 .post-list {
-  max-width: 600px;    /* 投稿の最大横幅を制限 */
+  /*max-width: 600px;    /* 投稿の最大横幅を制限 */
   margin: 0 auto;      /* 上下0、左右を自動計算（これで中央に寄る） */
-  padding: 20px;       /* 端に少し余白を作る */
+  padding: 50px;       /* 端に少し余白を作る */
 }
 
 /* 2. 各投稿カードのスタイル */
 .post-item {
   white-space: pre-wrap;
-  background-color: #D9D9D9;
-  border: 1px solid #ccc;
+  background-color: #B4EBE680; /* 透けさせる */
+  /*background-color: #FBF8EF;*/
+  border: 1px solid #FFB433;
   border-radius: 20px;  /* 角を丸く */
-  padding: 20px;
+  padding: 25px;
   margin-bottom: 20px; /* 投稿ごとの間隔 */
   text-align: left;    /* 文章自体は左揃えにする（読みやすさのため） */
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* 軽い影をつけて浮かせる */
+  /*box-shadow: 0 2px 4px rgba(0,0,0,0.3); /* 軽い影をつけて浮かせる */
+}
+.post-sentence{
+  font-size:20px;
 }
 
 /* 3. タイトルなどの装飾 */

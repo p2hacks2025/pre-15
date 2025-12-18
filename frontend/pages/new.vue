@@ -13,9 +13,9 @@
       </div>
 
       <!-- テキスト入力エリア -->
-      <div class="body-wrapper" style="position: relative;">
-        <textarea id="body" class="sticky-note" v-model="body" required
-          :disabled="!isLoggedIn || isSubmitting"></textarea>
+      <div class="body-wrapper">
+        <textarea id="body" class="sticky-note" v-model="body" required :disabled="!isLoggedIn || isSubmitting"
+          :style="currentBgStyle"></textarea>
 
         <!-- 共有ボタン（現状は機能なし） -->
         <button type="button" class="share-btn" aria-label="共有" @click="onShareClick">
@@ -24,6 +24,32 @@
               d="M240-80q-33 0-56.5-23.5T160-160v-400q0-33 23.5-56.5T240-640h120v80H240v400h480v-400H600v-80h120q33 0 56.5 23.5T800-560v400q0 33-23.5 56.5T720-80H240Zm200-240v-447l-64 64-56-57 160-160 160 160-56 57-64-64v447h-80Z" />
           </svg>
         </button>
+
+        <!-- 背景選択（スワイプで切替） -->
+        <div class="bg-controls" aria-hidden="false">
+          <div class="bg-swipe-area" role="group" aria-label="背景をスワイプで切替" @pointerdown="onPointerDown"
+            @pointerup="onPointerUp" @touchstart.prevent="onTouchStart" @touchend.prevent="onTouchEnd">
+            <button type="button" class="bg-arrow left" @click="prevBg" aria-label="前の背景">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg>
+            </button>
+            <div class="bg-thumbs" aria-hidden="false">
+              <div class="bg-thumb thumb-small" :style="bgStyle(prev2Index)" @click="bgIndex = prev2Index"> </div>
+              <div class="bg-thumb thumb-medium" :style="bgStyle(prev1Index)" @click="bgIndex = prev1Index"> </div>
+              <div class="bg-thumb thumb-large current" :style="bgStyle(bgIndex)" @click="null"> </div>
+              <div class="bg-thumb thumb-medium" :style="bgStyle(next1Index)" @click="bgIndex = next1Index"> </div>
+              <div class="bg-thumb thumb-small" :style="bgStyle(next2Index)" @click="bgIndex = next2Index"> </div>
+            </div>
+            <button type="button" class="bg-arrow right" @click="nextBg" aria-label="次の背景">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </button>
+          </div>
+        </div>
       </div>
 
       <div class="submit-wrapper">
@@ -41,7 +67,7 @@
 <script setup>
 // Step 53 で修正した <script setup> の中身を全て貼り付けます。
 import { useAuthUser } from '../composables/useAuthUser';
-import { ref } from 'vue'; // refのインポートを明記
+import { ref, computed } from 'vue'; // ref と computed をインポート
 
 const router = useRouter();
 
@@ -58,6 +84,92 @@ const body = ref('');
 const isSubmitting = ref(false);
 const successMessage = ref('');
 const errorMessage = ref('');
+
+// 背景切替用の配列（色または将来の画像URLを格納します）
+const backgrounds = [
+  { id: 0, type: 'color', color: '#FFF8E6' },
+  { id: 1, type: 'color', color: '#FBF8EF' },
+  { id: 2, type: 'color', color: '#FFF0D9' },
+  { id: 3, type: 'color', color: '#F5F5F5' }
+  // 将来的に { type: 'image', url: '/images/bg1.jpg' } のように画像を追加できます
+];
+
+// 選択中の背景インデックス
+const bgIndex = ref(0);
+
+// 現在の背景スタイル（sticky-note 用）
+const currentBgStyle = computed(() => {
+  const b = backgrounds[bgIndex.value] || backgrounds[0];
+  if (b.type === 'image' && b.url) {
+    return {
+      backgroundImage: `url(${b.url})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center'
+    };
+  }
+  return { backgroundColor: b.color };
+});
+
+// 指定インデックスの背景スタイル（サムネイル用）
+const bgStyle = (i) => {
+  const idx = Number(i) % backgrounds.length;
+  const b = backgrounds[idx] || backgrounds[0];
+  if (b.type === 'image' && b.url) {
+    return {
+      backgroundImage: `url(${b.url})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center'
+    };
+  }
+  return { backgroundColor: b.color };
+};
+
+// 計算された周辺インデックス（prev2, prev1, next1, next2）
+const prev2Index = computed(() => (bgIndex.value - 2 + backgrounds.length) % backgrounds.length);
+const prev1Index = computed(() => (bgIndex.value - 1 + backgrounds.length) % backgrounds.length);
+const next1Index = computed(() => (bgIndex.value + 1) % backgrounds.length);
+const next2Index = computed(() => (bgIndex.value + 2) % backgrounds.length);
+
+// スワイプ（タッチ/ポインタ）ハンドラ
+const touchStartX = ref(null);
+const onPointerDown = (e) => {
+  touchStartX.value = e.clientX;
+};
+const onPointerUp = (e) => {
+  if (touchStartX.value === null) return;
+  const dx = e.clientX - touchStartX.value;
+  handleSwipe(dx);
+  touchStartX.value = null;
+};
+const onTouchStart = (e) => {
+  touchStartX.value = e.touches ? e.touches[0].clientX : e.clientX;
+};
+const onTouchEnd = (e) => {
+  if (touchStartX.value === null) return;
+  const dx = e.changedTouches ? e.changedTouches[0].clientX - touchStartX.value : e.clientX - touchStartX.value;
+  handleSwipe(dx);
+  touchStartX.value = null;
+};
+
+const handleSwipe = (dx) => {
+  const threshold = 40; // px
+  if (Math.abs(dx) < threshold) return;
+  if (dx < 0) {
+    // swipe left -> next
+    bgIndex.value = (bgIndex.value + 1) % backgrounds.length;
+  } else {
+    // swipe right -> prev
+    bgIndex.value = (bgIndex.value - 1 + backgrounds.length) % backgrounds.length;
+  }
+};
+
+// 矢印ボタン用のハンドラ
+const prevBg = () => {
+  bgIndex.value = (bgIndex.value - 1 + backgrounds.length) % backgrounds.length;
+};
+const nextBg = () => {
+  bgIndex.value = (bgIndex.value + 1) % backgrounds.length;
+};
 
 const onShareClick = () => {
   console.log('共有ボタンが押されました');
@@ -162,6 +274,137 @@ const submitPost = async () => {
   /* 横中央に揃える */
   gap: 12px;
 }
+
+/* 背景スライダーとプレビュー */
+.bg-controls {
+  width: min(80vw, 300px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.bg-slider {
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 8px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #eee 0%, #ddd 100%);
+}
+
+.bg-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #ffb74d;
+  border: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+}
+
+.bg-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #ffb74d;
+  border: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+}
+
+.bg-preview-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.bg-preview-label {
+  font-size: 12px;
+  color: #666;
+}
+
+.bg-thumb {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.04);
+  background-size: cover;
+  background-position: center;
+}
+
+/* サムネイル群 */
+.bg-thumbs {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+}
+
+.bg-thumb.thumb-small {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  opacity: 0.9;
+}
+
+.bg-thumb.thumb-medium {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+}
+
+.bg-thumb.thumb-large {
+  width: 64px;
+  height: 64px;
+  border-radius: 10px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+.bg-thumb.current {
+  transform: translateY(-4px);
+}
+
+.bg-swipe-area {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 0 0;
+}
+
+.bg-arrow {
+  background: transparent;
+  border: none;
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.bg-arrow svg {
+  width: 18px;
+  height: 18px;
+  stroke: #666;
+}
+
+.bg-arrow:focus {
+  outline: none;
+}
+
+.bg-arrow:focus-visible {
+  outline: 3px solid rgba(0, 0, 0, 0.12);
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+
 
 .close-btn {
   position: absolute;

@@ -11,13 +11,9 @@
         <NuxtLink to="/auth">ログイン/登録はこちら</NuxtLink>
       </div>
 
-      <div class="form-group">
-        <label for="title">タイトル</label>
-        <input type="text" id="title" v-model="title" required :disabled="!isLoggedIn || isSubmitting">
-      </div>
-      <div class="form-group">
-        <label for="body">本文</label>
-        <textarea id="body" v-model="body" rows="6" required :disabled="!isLoggedIn || isSubmitting"></textarea>
+      <div class="form body-wrapper">
+        <textarea id="body" class="sticky-note" v-model="body" :disabled="!isLoggedIn || isSubmitting"
+          required></textarea>
       </div>
 
       <button type="submit" :disabled="!isLoggedIn || isSubmitting">
@@ -113,7 +109,7 @@ const submitPost = async () => {
 
 /* 投稿フォームのコンテナ */
 .new-post-container {
-  max-width: 600px;
+  max-width: 350px;
   margin: 40px auto;
   padding: 20px;
   background-color: #f9f9f9;
@@ -121,25 +117,44 @@ const submitPost = async () => {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.form-group {
+.form {
   margin-bottom: 15px;
 }
 
-.form-group label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
-  color: #333;
-}
-
-.form-group input[type="text"],
-.form-group textarea {
+.form input[type="text"],
+.form textarea {
   width: 100%;
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 4px;
   box-sizing: border-box;
   font-size: 16px;
+}
+
+.sticky-note {
+  width: min(80vw, 100px);
+  /* 画面幅に応じて最大200px */
+  aspect-ratio: 1 / 1;
+  /* 正方形を保つ */
+  background: #fff8b5;
+  /* 付箋風の薄黄色 */
+  border: 1px solid #f0e68c;
+  padding: 18px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+  border-radius: 6px;
+  resize: none;
+  font-size: 16px;
+  line-height: 1.4;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+.body-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* 横中央 */
+  gap: 8px;
 }
 
 button[type="submit"] {

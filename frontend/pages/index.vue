@@ -1,17 +1,20 @@
 <template>
-  <div class="hero-container">
-    <div class="content">
-      <div class="logo-wrapper">
-        <img v-if="logoUrl" :src="logoUrl" alt="App Logo" class="logo-image" />
-        <h1 v-else class="fallback-logo">APP LOGO</h1>
-      </div>
+  <div class="hero-container" @click="goExplain" role="button" tabindex="0" @keyup.enter="goExplain"
+    aria-label="説明ページへ移動">
+    <div class="logo-wrapper">
+      <img v-if="logoUrl" :src="logoUrl" alt="App Logo" class="logo-image" />
+      <h1 v-else class="fallback-logo">APP LOGO</h1>
     </div>
   </div>
 </template>
 
 <script setup>
-// ロゴのパスを指定
+const router = useRouter();
 const logoUrl = "images/logo.png";
+
+const goExplain = () => {
+  router.push('/explain');
+};
 </script>
 
 <style scoped>
@@ -24,13 +27,7 @@ const logoUrl = "images/logo.png";
   background-size: auto 100vh;
   background-position: center top;
   background-repeat: no-repeat;
-}
-
-.content {
-  position: relative;
-  z-index: 2;
-  text-align: center;
-  color: #ffffff;
+  cursor: pointer;
 }
 
 .logo-wrapper {

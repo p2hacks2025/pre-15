@@ -1,10 +1,6 @@
 <template>
     <div class="hero-container">
         <div class="content">
-            <div class="logo-wrapper">
-                <img v-if="logoUrl" :src="logoUrl" alt="App Logo" class="logo-image" />
-                <h1 v-else class="fallback-logo">APP LOGO</h1>
-            </div>
         </div>
     </div>
 </template>

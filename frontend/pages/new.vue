@@ -13,7 +13,7 @@
       </div>
 
       <!-- テキスト入力エリア -->
-      <div class="form-group body-wrapper" style="position: relative;">
+      <div class="body-wrapper" style="position: relative;">
         <textarea id="body" class="sticky-note" v-model="body" required
           :disabled="!isLoggedIn || isSubmitting"></textarea>
 
@@ -28,7 +28,7 @@
 
       <div class="submit-wrapper">
         <button type="submit" class="submit-btn" :disabled="!isLoggedIn || isSubmitting">
-          {{ isSubmitting ? '投稿中...' : '投稿する' }}
+          {{ isSubmitting ? '投稿中...' : '投稿' }}
         </button>
       </div>
     </form>
@@ -122,7 +122,7 @@ const submitPost = async () => {
 .form textarea {
   width: 100%;
   padding: 10px;
-  border: 1px solid #ddd;
+  border: none;
   border-radius: 4px;
   box-sizing: border-box;
   font-size: 16px;
@@ -136,9 +136,9 @@ const submitPost = async () => {
   /* 画面幅に応じて最大300px */
   aspect-ratio: 1 / 1;
   /* 正方形を保つ */
+  background-color: #FBF8EF;
   border: 1px solid #FFB433;
   padding: 18px;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
   border-radius: 6px;
   resize: none;
   font-size: 16px;
@@ -146,6 +146,11 @@ const submitPost = async () => {
   box-sizing: border-box;
   font-family: inherit;
   z-index: 10;
+}
+
+.sticky-note:focus {
+  outline: none;
+  box-shadow: none;
 }
 
 .body-wrapper {
@@ -196,11 +201,11 @@ const submitPost = async () => {
 }
 
 .submit-btn {
-  min-width: 180px;
+  min-width: 120px;
   padding: 10px 22px;
-  background: #4CAF50;
-  color: #fff;
-  border: none;
+  background: #FBF8EF;
+  color: #000000;
+  border: 10px solid #B4EBE6;
   border-radius: 6px;
   cursor: pointer;
 }

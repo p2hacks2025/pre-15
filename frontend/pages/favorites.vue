@@ -2,14 +2,17 @@
   <div>
     <h1>自分がいいねした投稿一覧</h1>
     <p>
-        <NuxtLink to="/timeline">← 投稿一覧に戻る</NuxtLink>    </p>
+      <NuxtLink to="/timeline">← 投稿一覧に戻る</NuxtLink>
+    </p>
 
     <div v-if="!isAuthReady">
       <p>認証情報を読み込み中です...</p>
     </div>
     <div v-else-if="!isLoggedIn">
       <p>いいね一覧を見るにはログインが必要です。</p>
-      <p><NuxtLink to="/auth">ログイン / 新規登録</NuxtLink></p>
+      <p>
+        <NuxtLink to="/auth">ログイン / 新規登録</NuxtLink>
+      </p>
     </div>
 
     <p v-else-if="pending">データを読み込み中です...</p>
@@ -20,9 +23,9 @@
         <h3>{{ post.title }}</h3>
         <p>{{ post.body }}</p>
         <small>投稿日時: {{ formatTimestamp(post.createdAt) }}</small>
-        </div>
+      </div>
     </div>
-    
+
     <p v-else>まだいいねした投稿はありません。</p>
   </div>
 </template>
@@ -30,14 +33,14 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useAuthUser } from '../composables/useAuthUser';
-import { 
-  collection, 
-  getDocs, 
-  query, 
-  where, 
-  doc, 
+import {
+  collection,
+  getDocs,
+  query,
+  where,
+  doc,
   getDoc,
-  orderBy 
+  orderBy
 } from 'firebase/firestore';
 
 const { uid, isLoggedIn, isAuthReady } = useAuthUser();
@@ -54,20 +57,20 @@ const fetchFavoritePosts = async () => {
     pending.value = false;
     return;
   }
-  
+
   pending.value = true;
   error.value = null;
-  
+
   try {
     // 1. ユーザーのUIDに紐づくいいね情報を取得
     const favoritesCollection = collection($firestore, 'favorites');
     const favoritesQuery = query(
-      favoritesCollection, 
+      favoritesCollection,
       where('userId', '==', uid.value),
       orderBy('createdAt', 'desc') // 新しいいいねから表示
     );
     const favoritesSnapshot = await getDocs(favoritesQuery);
-    
+
     if (favoritesSnapshot.empty) {
       favoritePosts.value = [];
       return;
@@ -75,12 +78,12 @@ const fetchFavoritePosts = async () => {
 
     // 2. いいね情報から投稿IDのリストを作成
     const postIds = favoritesSnapshot.docs.map(d => d.data().postId);
-    
+
     // 3. 各投稿IDに対応する投稿データを取得
     const postsPromises = postIds.map(async postId => {
       const postDocRef = doc($firestore, 'posts', postId);
       const postDoc = await getDoc(postDocRef);
-      
+
       if (postDoc.exists()) {
         return { id: postDoc.id, ...postDoc.data() };
       }
@@ -102,49 +105,50 @@ const fetchFavoritePosts = async () => {
 const formatTimestamp = (timestamp) => {
   if (!timestamp) return '不明';
   if (timestamp && typeof timestamp.toDate === 'function') {
-      return timestamp.toDate().toLocaleString('ja-JP', { 
-          year: 'numeric', month: '2-digit', day: '2-digit', 
-          hour: '2-digit', minute: '2-digit' 
-      });
+    return timestamp.toDate().toLocaleString('ja-JP', {
+      year: 'numeric', month: '2-digit', day: '2-digit',
+      hour: '2-digit', minute: '2-digit'
+    });
   }
   return '日付取得エラー';
 };
 
 // ログイン状態が準備完了になり、ログインしている場合にデータを取得
 onMounted(() => {
-    // クライアントサイドでのみ実行
-    if (!isLoggedIn.value) {
-        // 未ログイン時は何もしないか、リダイレクトさせる
-        return;
-    }
-    fetchFavoritePosts();
+  // クライアントサイドでのみ実行
+  if (!isLoggedIn.value) {
+    // 未ログイン時は何もしないか、リダイレクトさせる
+    return;
+  }
+  fetchFavoritePosts();
 });
 
 // ログイン状態が変化したときにもデータを再取得
 watch([isAuthReady, uid], () => {
-    if (isAuthReady.value && isLoggedIn.value) {
-        fetchFavoritePosts();
-    }
+  if (isAuthReady.value && isLoggedIn.value) {
+    fetchFavoritePosts();
+  }
 }, { immediate: true });
 
 
 </script>
 
 <style scoped>
-/* スタイルは省略 */
 .post-list {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
+
 .post-item {
-    border: 1px solid #ddd;
-    padding: 15px;
-    border-radius: 8px;
-    background-color: #fff;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  border: 1px solid #ddd;
+  padding: 15px;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
+
 .post-item h3 {
-    margin-top: 0;
+  margin-top: 0;
 }
 </style>

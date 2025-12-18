@@ -1,6 +1,6 @@
 <template>
   <div class="new-post-container">
-    <form @submit.prevent="submitPost">
+    <form @submit.prevent="submitPost" :class="{ 'has-warning': !isLoggedIn && isAuthReady }">
       <button type="button" class="close-btn" @click="router.push('/timeline')" aria-label="投稿一覧に戻る">
         <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000">
           <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" />
@@ -63,7 +63,7 @@
     <p v-if="errorMessage" class="message error">{{ errorMessage }}</p>
   </div>
 
-  <div class="page-bg"><img src="/images/background-1.png" alt="" /></div>
+  <div class="page-bg"><img src="/images/bg-n.png" alt="" /></div>
 </template>
 
 <script setup>
@@ -221,10 +221,14 @@ const submitPost = async () => {
 .new-post-container {
   position: relative;
   max-width: 420px;
-  margin: 40px auto;
-  padding: 56px 0 20px;
+  margin: 20px auto;
+  padding: 18px 12px 20px;
   background-color: transparent;
   /* コンテナは透明 */
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 40px);
+  box-sizing: border-box;
 }
 
 .form {
@@ -245,13 +249,14 @@ const submitPost = async () => {
   display: block;
   margin: 0 auto;
   /* 中央に配置 */
-  width: min(80vw, 300px);
-  /* 画面幅に応じて最大300px */
+  width: min(80vw, 320px);
+  /* 画面幅に応じて最大320px */
   aspect-ratio: 1 / 1;
-  /* 正方形を保つ */
+  /* 正方形を保つ（小さい画面で解除） */
+  max-height: 60vh;
   background-color: #FBF8EF;
   border: 1px solid #FFB433;
-  padding: 18px;
+  padding: 14px;
   border-radius: 6px;
   resize: none;
   font-size: 16px;
@@ -259,6 +264,9 @@ const submitPost = async () => {
   box-sizing: border-box;
   font-family: inherit;
   z-index: 10;
+  overflow: auto;
+  /* 内部でスクロール可能 */
+  min-height: 120px;
 }
 
 .sticky-note:focus {
@@ -278,12 +286,14 @@ const submitPost = async () => {
 
 /* 背景スライダーとプレビュー */
 .bg-controls {
-  width: min(80vw, 300px);
+  width: min(80vw, 320px);
+  max-width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 8px;
   margin-top: 8px;
+  flex-shrink: 0;
 }
 
 .bg-slider {
@@ -424,12 +434,36 @@ const submitPost = async () => {
   z-index: 60;
 }
 
+/* When the warning is visible, make the close button part of the normal flow and push the warning below it */
+.new-post-container>form.has-warning .close-btn {
+  position: relative;
+  top: auto;
+  right: 0;
+  margin-left: auto;
+  margin-bottom: 8px;
+  align-self: flex-end;
+  z-index: 80;
+}
+
+.new-post-container>form.has-warning .warning-box {
+  margin-top: 0;
+}
+
+@media (max-height: 520px) {
+  .new-post-container>form.has-warning .close-btn {
+    margin-bottom: 6px;
+  }
+
+  .new-post-container>form.has-warning .warning-box {
+    margin-top: 8px;
+  }
+}
+
 .share-btn {
   background-color: transparent;
   border: none;
   position: absolute;
   right: 18px;
-  /* 右寄せ */
   bottom: 8px;
   padding: 6px;
   border-radius: 6px;
@@ -444,7 +478,7 @@ const submitPost = async () => {
 }
 
 .submit-btn {
-  min-width: 120px;
+  width: fit-content;
   padding: 10px 22px;
   background: #FBF8EF;
   color: #000000;
@@ -506,5 +540,66 @@ const submitPost = async () => {
   max-height: 100vh;
   height: auto;
   object-fit: contain;
+}
+
+/* Additional responsive rules to ensure layout fits vertically */
+@media (max-height: 720px) {
+  .new-post-container {
+    padding-top: 14px;
+    padding-bottom: 14px;
+  }
+
+  .body-wrapper {
+    gap: 8px;
+  }
+
+  .sticky-note {
+    max-height: 50vh;
+    width: min(74vw, 300px);
+  }
+
+  .bg-thumb.thumb-large {
+    width: 56px;
+    height: 56px;
+  }
+}
+
+@media (max-height: 640px) {
+  .sticky-note {
+    max-height: 44vh;
+    aspect-ratio: auto;
+    width: min(72vw, 280px);
+  }
+
+  .bg-thumbs {
+    gap: 8px;
+  }
+
+  .close-btn {
+    top: 8px;
+    right: 8px;
+  }
+}
+
+@media (max-height: 520px) {
+  .sticky-note {
+    max-height: 38vh;
+    aspect-ratio: auto;
+    width: min(68vw, 260px);
+    padding: 10px;
+  }
+
+  .new-post-container {
+    padding-top: 12px;
+    padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .bg-thumb {
+    opacity: 0.95;
+  }
+
+  .submit-wrapper {
+    bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+  }
 }
 </style>

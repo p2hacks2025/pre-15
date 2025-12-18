@@ -200,14 +200,6 @@ const isUserAuthReady = () => getAuth().isAuthReady.value;
   top: 160px;
   left: 60px; 
 }
-.main-footer {
-  position: sticky;    /* スクロールしても上部に残る */
-  bottom: 0;
-  width: 100%;
-  z-index: 100;
-  /*border-bottom: 130px solid #B4EBE6;*/
-}
-
 
 /*新規作成ぼたん*/
 .floating-button {

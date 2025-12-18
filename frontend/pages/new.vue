@@ -1,10 +1,11 @@
 <template>
   <div class="new-post-container">
-    <button type="button" class="close-btn" @click="router.push('/timeline')" aria-label="投稿一覧に戻る" title="投稿一覧に戻る">
-      ✕
-    </button>
-
     <form @submit.prevent="submitPost">
+      <button type="button" class="close-btn" @click="router.push('/timeline')" aria-label="投稿一覧に戻る">
+        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000">
+          <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" />
+        </svg>
+      </button>
 
       <div v-if="!isLoggedIn && isAuthReady" class="warning-box">
         投稿するにはログインが必要です。
@@ -17,11 +18,16 @@
           :disabled="!isLoggedIn || isSubmitting"></textarea>
 
         <!-- 共有ボタン（現状は機能なし） -->
-        <button type="button" class="share-btn" aria-label="共有ボタン" @click="console.log('共有ボタン押下')">共有</button>
+        <button type="button" class="share-btn" aria-label="共有" @click="onShareClick">
+          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000">
+            <path
+              d="M240-80q-33 0-56.5-23.5T160-160v-400q0-33 23.5-56.5T240-640h120v80H240v400h480v-400H600v-80h120q33 0 56.5 23.5T800-560v400q0 33-23.5 56.5T720-80H240Zm200-240v-447l-64 64-56-57 160-160 160 160-56 57-64-64v447h-80Z" />
+          </svg>
+        </button>
       </div>
 
       <div class="submit-wrapper">
-        <button type="submit" :disabled="!isLoggedIn || isSubmitting" class="primary-btn">
+        <button type="submit" class="submit-btn" :disabled="!isLoggedIn || isSubmitting">
           {{ isSubmitting ? '投稿中...' : '投稿する' }}
         </button>
       </div>
@@ -52,6 +58,10 @@ const body = ref('');
 const isSubmitting = ref(false);
 const successMessage = ref('');
 const errorMessage = ref('');
+
+const onShareClick = () => {
+  console.log('共有ボタンが押されました');
+};
 
 const submitPost = async () => {
   // 認証状態のチェック
@@ -94,33 +104,14 @@ const submitPost = async () => {
 </script>
 
 <style scoped>
-.close-btn {
-  background: #fff;
-  border: 1px solid #ddd;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  cursor: pointer;
-  font-size: 18px;
-  line-height: 1;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-}
-
-.close-btn:hover {
-  background: #f5f5f5;
-}
-
 /* 投稿フォームのコンテナ */
 .new-post-container {
-  max-width: 400px;
+  position: relative;
+  max-width: 420px;
   margin: 40px auto;
-  padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 56px 0 20px;
+  background-color: transparent;
+  /* コンテナは透明 */
 }
 
 .form {
@@ -142,9 +133,7 @@ const submitPost = async () => {
   /* 画面幅に応じて最大300px */
   aspect-ratio: 1 / 1;
   /* 正方形を保つ */
-  background: #fff8b5;
-  /* 付箋風の薄黄色 */
-  border: 1px solid #f0e68c;
+  border: 1px solid #FFB433;
   padding: 18px;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
   border-radius: 6px;
@@ -153,22 +142,43 @@ const submitPost = async () => {
   line-height: 1.4;
   box-sizing: border-box;
   font-family: inherit;
+  z-index: 10;
 }
 
 .body-wrapper {
   position: relative;
+  padding-bottom: 48px;
+}
+
+.close-btn {
+  position: absolute;
+  right: 18px;
+  top: 18px;
+  background: transparent;
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 60;
 }
 
 .share-btn {
+  background-color: transparent;
+  border: none;
   position: absolute;
-  left: 12px;
-  bottom: -12px;
-  background: #fff;
-  border: 1px solid #ddd;
-  padding: 6px 10px;
+  right: 18px;
+  /* 右寄せ */
+  bottom: 8px;
+  padding: 6px;
   border-radius: 6px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
   cursor: pointer;
+  z-index: 40;
 }
 
 .submit-wrapper {
@@ -177,7 +187,7 @@ const submitPost = async () => {
   margin-top: 18px;
 }
 
-.primary-btn {
+.submit-btn {
   min-width: 180px;
   padding: 10px 22px;
   background: #4CAF50;
@@ -187,7 +197,7 @@ const submitPost = async () => {
   cursor: pointer;
 }
 
-.primary-btn:disabled {
+.submit-btn:disabled {
   background: #aaa;
   cursor: not-allowed;
 }
@@ -217,5 +227,16 @@ const submitPost = async () => {
   color: #e65100;
   font-weight: bold;
   text-decoration: none;
+}
+</style>
+
+<style>
+/* ページ全体の背景色 */
+html,
+body,
+#__nuxt,
+#app {
+  background-color: #FBF8EF;
+  min-height: 100vh;
 }
 </style>

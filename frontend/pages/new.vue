@@ -62,12 +62,13 @@
     <p v-if="successMessage" class="message success">{{ successMessage }}</p>
     <p v-if="errorMessage" class="message error">{{ errorMessage }}</p>
   </div>
+
+  <div class="page-bg"><img src="/images/background-1.png" alt="" /></div>
 </template>
 
 <script setup>
-// Step 53 で修正した <script setup> の中身を全て貼り付けます。
 import { useAuthUser } from '../composables/useAuthUser';
-import { ref, computed } from 'vue'; // ref と computed をインポート
+import { ref, computed } from 'vue';
 
 const router = useRouter();
 
@@ -86,7 +87,7 @@ const successMessage = ref('');
 const errorMessage = ref('');
 
 // 背景切替用の配列（色または将来の画像URLを格納します）
-const backgrounds = [
+const text_backgrounds = [
   { id: 0, type: 'color', color: '#FFF8E6' },
   { id: 1, type: 'color', color: '#FBF8EF' },
   { id: 2, type: 'color', color: '#FFF0D9' },
@@ -99,7 +100,7 @@ const bgIndex = ref(0);
 
 // 現在の背景スタイル（sticky-note 用）
 const currentBgStyle = computed(() => {
-  const b = backgrounds[bgIndex.value] || backgrounds[0];
+  const b = text_backgrounds[bgIndex.value] || text_backgrounds[0];
   if (b.type === 'image' && b.url) {
     return {
       backgroundImage: `url(${b.url})`,
@@ -112,8 +113,8 @@ const currentBgStyle = computed(() => {
 
 // 指定インデックスの背景スタイル（サムネイル用）
 const bgStyle = (i) => {
-  const idx = Number(i) % backgrounds.length;
-  const b = backgrounds[idx] || backgrounds[0];
+  const idx = Number(i) % text_backgrounds.length;
+  const b = text_backgrounds[idx] || text_backgrounds[0];
   if (b.type === 'image' && b.url) {
     return {
       backgroundImage: `url(${b.url})`,
@@ -125,10 +126,10 @@ const bgStyle = (i) => {
 };
 
 // 計算された周辺インデックス（prev2, prev1, next1, next2）
-const prev2Index = computed(() => (bgIndex.value - 2 + backgrounds.length) % backgrounds.length);
-const prev1Index = computed(() => (bgIndex.value - 1 + backgrounds.length) % backgrounds.length);
-const next1Index = computed(() => (bgIndex.value + 1) % backgrounds.length);
-const next2Index = computed(() => (bgIndex.value + 2) % backgrounds.length);
+const prev2Index = computed(() => (bgIndex.value - 2 + text_backgrounds.length) % text_backgrounds.length);
+const prev1Index = computed(() => (bgIndex.value - 1 + text_backgrounds.length) % text_backgrounds.length);
+const next1Index = computed(() => (bgIndex.value + 1) % text_backgrounds.length);
+const next2Index = computed(() => (bgIndex.value + 2) % text_backgrounds.length);
 
 // スワイプ（タッチ/ポインタ）ハンドラ
 const touchStartX = ref(null);
@@ -156,19 +157,19 @@ const handleSwipe = (dx) => {
   if (Math.abs(dx) < threshold) return;
   if (dx < 0) {
     // swipe left -> next
-    bgIndex.value = (bgIndex.value + 1) % backgrounds.length;
+    bgIndex.value = (bgIndex.value + 1) % text_backgrounds.length;
   } else {
     // swipe right -> prev
-    bgIndex.value = (bgIndex.value - 1 + backgrounds.length) % backgrounds.length;
+    bgIndex.value = (bgIndex.value - 1 + text_backgrounds.length) % text_backgrounds.length;
   }
 };
 
 // 矢印ボタン用のハンドラ
 const prevBg = () => {
-  bgIndex.value = (bgIndex.value - 1 + backgrounds.length) % backgrounds.length;
+  bgIndex.value = (bgIndex.value - 1 + text_backgrounds.length) % text_backgrounds.length;
 };
 const nextBg = () => {
-  bgIndex.value = (bgIndex.value + 1) % backgrounds.length;
+  bgIndex.value = (bgIndex.value + 1) % text_backgrounds.length;
 };
 
 const onShareClick = () => {
@@ -405,7 +406,6 @@ const submitPost = async () => {
   border-radius: 8px;
 }
 
-
 .close-btn {
   position: absolute;
   right: 18px;
@@ -484,15 +484,27 @@ const submitPost = async () => {
   font-weight: bold;
   text-decoration: none;
 }
-</style>
 
-<style>
-/* ページ全体の背景色 */
-html,
-body,
-#__nuxt,
-#app {
-  background-color: #FBF8EF;
-  min-height: 100vh;
+.page-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.page-bg img {
+  display: block;
+  width: auto;
+  max-width: 1200px;
+  max-height: 100vh;
+  height: auto;
+  object-fit: contain;
 }
 </style>

@@ -2,7 +2,7 @@
   <div class="welcome-container">
     <h1>掲示板へようこそ！</h1>
     <p class="subtitle">ログインして、皆の投稿を見たり、自分の考えをシェアしましょう。</p>
-    
+
     <div class="actions">
       <NuxtLink to="/timeline" class="button primary">
         投稿一覧を見る
@@ -15,7 +15,6 @@
 </template>
 
 <script setup>
-// このページには特別なロジックは必要ありません
 </script>
 
 <style scoped>

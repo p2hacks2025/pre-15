@@ -1,9 +1,13 @@
 <template>
-  <div>
-    <h1>掲示板 投稿一覧</h1>
-    <p>
-      <NuxtLink to="/new">新しい投稿をする</NuxtLink>
-    </p>
+  <div class="page-container">
+    <header class="main-header">
+    <NuxtLink to="/" class="hanbargarbar">
+      <img src="/images/hanbargarbar-icon.png" alt="はんばーがーば" />
+    </NuxtLink>
+    </header>
+    <NuxtLink to="/new" class="floating-button">
+      <img src="/images/newpost-icon.png" alt="新規投稿" />
+    </NuxtLink>
 
     <p v-if="isUserLoggedIn()">
       <NuxtLink to="/favorites">>> 自分がいいねした投稿を見る</NuxtLink>
@@ -14,17 +18,19 @@
 
     <div v-else-if="posts && posts.length > 0" class="post-list">
       <div v-for="post in posts" :key="post.id" class="post-item">
-        <h3>{{ post.title }}</h3>
-        <p>{{ post.body }}</p> <button @click="toggleFavorite(post.id)" :disabled="!isUserLoggedIn()"
-          class="favorite-button">
-          {{ favorites[post.id] ? '❤️ いいね済み' : '🤍 いいねする' }}
+        <p class="post-sentence">{{ post.body }}</p><button 
+          @click="toggleFavorite(post.id)" 
+          :disabled="!isUserLoggedIn()"
+          class="favorite-button"
+        >
+          {{ favorites[post.id] ? '❤️' : '🤍' }}
         </button>
-
-        <small>投稿日時: {{ formatTimestamp(post.createdAt) }}</small>
+        
+        
       </div>
     </div>
-
-    <p v-else>まだ投稿がありません。</p>
+    <p v-else>トキメキはまだ届いていません</p>
+    <footer class="main-footer"></footer>
 
   </div>
 </template>
@@ -152,18 +158,6 @@ const toggleFavorite = async (postId) => {
   }
 };
 
-
-const formatTimestamp = (timestamp) => {
-  if (!timestamp) return '不明';
-  if (timestamp && typeof timestamp.toDate === 'function') {
-    return timestamp.toDate().toLocaleString('ja-JP', {
-      year: 'numeric', month: '2-digit', day: '2-digit',
-      hour: '2-digit', minute: '2-digit'
-    });
-  }
-  return '日付取得エラー';
-};
-
 const refresh = () => {
   fetchAllPosts();
   fetchFavorites();
@@ -175,4 +169,106 @@ const isUserLoggedIn = () => getAuth().isLoggedIn.value;
 const isUserAuthReady = () => getAuth().isAuthReady.value;
 </script>
 
-<style scoped></style>
+<style scoped>
+.page-container {
+  /* 背景画像の設定 */
+  background-image: url('/images/background-2.png'); /* 画像のパス */
+  background-size: cover;           /* 画面全体を覆う */
+  background-position: center;      /* 中央合わせ */
+  background-attachment: fixed;     /* スクロールしても背景は動かない */
+  background-repeat: no-repeat;     /* 繰り返し禁止 */
+  
+  width: 100vw;          /* 画面の横幅いっぱいに固定 */
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+.main-header {
+  /*background: #B4EBE6;*/
+  position: sticky;    /* スクロールしても上部に残る */
+  top: 0;
+  width: 100%;
+  z-index: 100;
+  /*border-bottom: 80px solid #B4EBE6;*/
+  margin-bottom: 20px;
+}
+.hanbargarbar{
+  width: 80px;         /* お好みのサイズに調整してください */
+  height: 80px;
+  top: 160px;
+  left: 60px; 
+}
+
+/*新規作成ぼたん*/
+.floating-button {
+  position: fixed;     /* 画面に対して固定位置にする */
+  bottom: 40px;        /* 下からpx */
+  right: 40px;         /* 右からpx */
+  z-index: 1000;       /* 他の要素より上に表示する */
+  transition: transform 0.2s; /* ホバー時のアニメーション用 */
+}
+
+/* 投稿ボタン */
+.floating-button img {
+  width: 80px;         /* お好みのサイズに調整してください */
+  height: 80px;
+  cursor: pointer;
+  /* 画像の影 */
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+}
+
+/* マウスを乗せた時（タップしたとき）に少し大きくする演出 */
+.floating-button:hover {
+  transform: scale(1.1);
+}
+/* 全体 */
+.post-list {
+  /*max-width: 600px;    /* 投稿の最大横幅を制限 */
+  margin: 0 auto;      /* 上下0、左右を自動計算（これで中央に寄る） */
+  padding: 50px;       /* 端に少し余白を作る */
+}
+
+/* 2. 各投稿カードのスタイル */
+.post-item {
+  white-space: pre-wrap;
+  background-color: #B4EBE680; /* 透けさせる */
+  /*background-color: #FBF8EF;*/
+  border: 1px solid #FFB433;
+  border-radius: 20px;  /* 角を丸く */
+  padding: 25px;
+  margin-bottom: 20px; /* 投稿ごとの間隔 */
+  text-align: left;    /* 文章自体は左揃えにする（読みやすさのため） */
+  /*box-shadow: 0 2px 4px rgba(0,0,0,0.3); /* 軽い影をつけて浮かせる */
+}
+.post-sentence{
+  font-size:20px;
+}
+
+/* 3. タイトルなどの装飾 */
+h3 {
+  margin-top: 0;
+  color: #333;
+}
+
+/* 4. いいねボタンの見た目 */
+.favorite-button {
+  background: white;
+  border: 1px solid #ff4d4f;
+  color: #ff4d4f;
+  padding: 5px 15px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.favorite-button:hover {
+  background: #fff1f0;
+}
+
+.favorite-button:disabled {
+  border-color: #ccc;
+  color: #ccc;
+  cursor: not-allowed;}
+</style>

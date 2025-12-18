@@ -1,7 +1,7 @@
 <template>
   <div class="auth-container">
     <h1>{{ isLogin ? 'ログイン' : '新規登録' }}</h1>
-    
+
     <div class="form-wrapper">
       <form @submit.prevent="authenticate">
         <div class="form-group">
@@ -92,19 +92,33 @@ const authenticate = async () => {
 <style scoped>
 /* コンテナ全体のレイアウト */
 .auth-container {
+  /* 背景画像の設定 */
+  background-image: url('/images/bgnostar.png'); /* 画像のパス */
+  background-size: cover;           /* 画面全体を覆う */
+  background-position: center;      /* 中央合わせ */
+  background-attachment: fixed;     /* スクロールしても背景は動かない */
+  background-repeat: no-repeat;     /* 繰り返し禁止 */
+
+  width: 100%;          /* 画面の横幅いっぱいに固定 */
+  min-height: 105vh;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 80vh;
   padding: 20px;
   font-family: 'Helvetica Neue', Arial, sans-serif;
 }
 
 h1 {
-  color: #333;
+  color: #2F1000;
   margin-bottom: 24px;
   font-size: 1.8rem;
+
+  transform: translateY(-40px);
 }
 
 
@@ -117,8 +131,9 @@ h1 {
   display: block;
   margin-bottom: 8px;
   font-weight: bold;
-  font-size: 0.9rem;
-  color: #555;
+  font-size: 1.3rem;
+  color: #2F1000;
+  text-align: center;
 }
 
 /* 入力フィールドの装飾 */
@@ -126,23 +141,26 @@ input[type="email"],
 input[type="password"] {
   width: 100%;
   padding: 12px;
-  border: 1px solid #ddd;
+  border: 1px solid #FFB433;
   border-radius: 6px;
   box-sizing: border-box; /* paddingを含めた幅計算 */
   font-size: 1rem;
   transition: border-color 0.3s;
+  text-align: center;
+  background-color: #FBF8EF;
 }
 
 input:focus {
   outline: none;
-  border-color: #42b883; /* Vueカラーをアクセントに */
+  background-color: #B4EBE600;
+  border: 1px solid #42b883;
 }
 
 /* ボタンのスタイル */
 button {
   width: 100%;
   padding: 12px;
-  background-color: #42b883;
+  background-color: #80CBC4;
   color: white;
   border: none;
   border-radius: 6px;
@@ -153,7 +171,7 @@ button {
 }
 
 button:hover {
-  background-color: #35495e;
+  background-color: #B4EBE6;
 }
 
 button:disabled {
@@ -170,7 +188,7 @@ button:disabled {
 }
 
 .toggle-mode a {
-  color: #42b883;
+  color: #80CBC4;
   text-decoration: none;
   font-weight: bold;
 }

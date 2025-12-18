@@ -129,6 +129,9 @@ const submitPost = async () => {
 }
 
 .sticky-note {
+  display: block;
+  margin: 0 auto;
+  /* 中央に配置 */
   width: min(80vw, 300px);
   /* 画面幅に応じて最大300px */
   aspect-ratio: 1 / 1;
@@ -148,6 +151,11 @@ const submitPost = async () => {
 .body-wrapper {
   position: relative;
   padding-bottom: 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* 横中央に揃える */
+  gap: 12px;
 }
 
 .close-btn {

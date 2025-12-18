@@ -1,12 +1,11 @@
 <template>
   <div class="new-post-container">
-    <h1>新しい投稿をする</h1>
-    <p>
-    <NuxtLink to="/timeline">← 投稿一覧に戻る</NuxtLink> 
-</p>
+    <button type="button" class="close-btn" @click="router.push('/timeline')" aria-label="投稿一覧に戻る" title="投稿一覧に戻る">
+      ✕
+    </button>
 
     <form @submit.prevent="submitPost">
-      
+
       <div v-if="!isLoggedIn && isAuthReady" class="warning-box">
         投稿するにはログインが必要です。
         <NuxtLink to="/auth">ログイン/登録はこちら</NuxtLink>
@@ -20,7 +19,7 @@
         <label for="body">本文</label>
         <textarea id="body" v-model="body" rows="6" required :disabled="!isLoggedIn || isSubmitting"></textarea>
       </div>
-      
+
       <button type="submit" :disabled="!isLoggedIn || isSubmitting">
         {{ isSubmitting ? '投稿中...' : '投稿する' }}
       </button>
@@ -59,13 +58,13 @@ const submitPost = async () => {
     router.push('/auth');
     return;
   }
-  
+
   if (isSubmitting.value) return;
 
   isSubmitting.value = true;
   successMessage.value = '';
   errorMessage.value = '';
-  
+
   try {
     const postsCollection = collection($firestore, 'posts');
 
@@ -73,8 +72,8 @@ const submitPost = async () => {
       title: title.value,
       body: body.value,
       // ログインユーザーのUIDを保存
-      userId: uid.value, 
-      createdAt: serverTimestamp(), 
+      userId: uid.value,
+      createdAt: serverTimestamp(),
     });
 
     successMessage.value = '投稿が完了しました！';
@@ -82,7 +81,7 @@ const submitPost = async () => {
     body.value = '';
     // 投稿一覧へリダイレクト（任意）
     // router.push('/');
-    
+
   } catch (error) {
     console.error("投稿エラー:", error);
     errorMessage.value = '投稿エラー: ' + error.message;
@@ -93,80 +92,100 @@ const submitPost = async () => {
 </script>
 
 <style scoped>
+.close-btn {
+  background: #fff;
+  border: 1px solid #ddd;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.close-btn:hover {
+  background: #f5f5f5;
+}
+
 /* 投稿フォームのコンテナ */
 .new-post-container {
-    max-width: 600px;
-    margin: 40px auto;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .form-group {
-    margin-bottom: 15px;
+  margin-bottom: 15px;
 }
 
 .form-group label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-    color: #333;
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #333;
 }
 
 .form-group input[type="text"],
 .form-group textarea {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    box-sizing: border-box; 
-    font-size: 16px;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 16px;
 }
 
 button[type="submit"] {
-    padding: 10px 20px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s;
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
 }
 
 button[type="submit"]:hover:not(:disabled) {
-    background-color: #45a049;
+  background-color: #45a049;
 }
 
 button[type="submit"]:disabled {
-    background-color: #aaa;
-    cursor: not-allowed;
+  background-color: #aaa;
+  cursor: not-allowed;
 }
 
 .message.success {
-    color: green;
-    font-weight: bold;
-    margin-top: 15px;
+  color: green;
+  font-weight: bold;
+  margin-top: 15px;
 }
 
 .message.error {
-    color: red;
-    font-weight: bold;
-    margin-top: 15px;
+  color: red;
+  font-weight: bold;
+  margin-top: 15px;
 }
 
 /* 警告ボックスのスタイル (Step 53で追加) */
 .warning-box {
-    padding: 10px;
-    background-color: #ffe0b2;
-    color: #e65100;
-    border-radius: 4px;
-    margin-bottom: 15px;
+  padding: 10px;
+  background-color: #ffe0b2;
+  color: #e65100;
+  border-radius: 4px;
+  margin-bottom: 15px;
 }
+
 .warning-box a {
-    color: #e65100;
-    font-weight: bold;
-    text-decoration: none;
+  color: #e65100;
+  font-weight: bold;
+  text-decoration: none;
 }
 </style>

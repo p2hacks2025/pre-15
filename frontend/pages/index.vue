@@ -1,78 +1,50 @@
 <template>
-  <div class="welcome-container">
-    <h1>掲示板へようこそ！</h1>
-    <p class="subtitle">ログインして、皆の投稿を見たり、自分の考えをシェアしましょう。</p>
-
-    <div class="actions">
-      <NuxtLink to="/timeline" class="button primary">
-        投稿一覧を見る
-      </NuxtLink>
-      <NuxtLink to="/auth" class="button secondary">
-        ログイン / 新規登録
-      </NuxtLink>
+  <div class="hero-container">
+    <div class="content">
+      <div class="logo-wrapper">
+        <img v-if="logoUrl" :src="logoUrl" alt="App Logo" class="logo-image" />
+        <h1 v-else class="fallback-logo">APP LOGO</h1>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
+// ロゴのパスを指定
+const logoUrl = "images/logo.png";
 </script>
 
 <style scoped>
-.welcome-container {
-  max-width: 800px;
-  margin: 100px auto;
-  padding: 40px;
-  text-align: center;
-  background-color: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-}
-
-h1 {
-  font-size: 2.5em;
-  color: #333;
-  margin-bottom: 10px;
-}
-
-.subtitle {
-  font-size: 1.2em;
-  color: #666;
-  margin-bottom: 40px;
-}
-
-.actions {
+.hero-container {
   display: flex;
+  align-items: center;
   justify-content: center;
-  gap: 20px;
+  min-height: 100vh;
+  background-image: url('/images/bg-n.png');
+  background-size: auto 100vh;
+  background-position: center top;
+  background-repeat: no-repeat;
 }
 
-.button {
-  display: inline-block;
-  padding: 12px 25px;
-  border-radius: 6px;
-  text-decoration: none;
+.content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  color: #ffffff;
+}
+
+.logo-wrapper {
+  margin-bottom: 2rem;
+}
+
+.logo-image {
+  max-width: 300px;
+  height: auto;
+}
+
+.fallback-logo {
+  font-size: 4rem;
   font-weight: bold;
-  transition: all 0.3s ease;
-}
-
-.primary {
-  background-color: #4CAF50;
-  color: white;
-}
-
-.primary:hover {
-  background-color: #45a049;
-  transform: translateY(-2px);
-}
-
-.secondary {
-  background-color: #f0f0f0;
-  color: #333;
-  border: 1px solid #ddd;
-}
-
-.secondary:hover {
-  background-color: #e0e0e0;
-  transform: translateY(-2px);
+  letter-spacing: 0.1em;
 }
 </style>

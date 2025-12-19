@@ -1,6 +1,6 @@
 <template>
   <div class="welcome-container">
-    <h1>掲示板へようこそ！</h1>
+    <h1>掲示板へようこそ！ </h1>
     <p class="subtitle">ログインして、皆の投稿を見たり、自分の考えをシェアしましょう。</p>
 
     <div class="actions">

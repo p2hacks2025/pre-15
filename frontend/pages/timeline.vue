@@ -4,6 +4,7 @@
       <NuxtLink to="/" class="hanbargarbar">
         <img src="/images/hanbargarbar-icon.png" alt="はんばーがーば" />
       </NuxtLink>
+      <NuxtLink to="/mypost">>> 自分の投稿を管理する</NuxtLink>
     </header>
     <NuxtLink to="/new" class="floating-button">
       <img src="/images/newpost-icon.png" alt="新規投稿" />

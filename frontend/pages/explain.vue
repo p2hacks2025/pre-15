@@ -1,6 +1,6 @@
 <template>
-    <div class="hero-container" @click="goTimeline" role="button" tabindex="0" @keyup.enter="goTimeline"
-        aria-label="タイムラインへ移動">
+    <div class="hero-container" @click="goAuth" role="button" tabindex="0" @keyup.enter="goAuth"
+        aria-label="ログイン/新規登録へ移動">
         <div class="content">
             <h2 class="explain-text"><span>あなたのトキメキを</span><span>詩にしよう！</span></h2>
         </div>
@@ -9,8 +9,8 @@
 
 <script setup>
 const router = useRouter();
-const goTimeline = () => {
-    router.push('/timeline');
+const goAuth = () => {
+    router.push('/auth');
 };
 </script>
 

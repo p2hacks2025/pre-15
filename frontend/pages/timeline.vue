@@ -1,9 +1,9 @@
 <template>
   <div class="page-container">
     <header class="main-header">
-    <NuxtLink to="/" class="hanbargarbar">
-      <img src="/images/hanbargarbar-icon.png" alt="はんばーがーば" />
-    </NuxtLink>
+      <NuxtLink to="/" class="hanbargarbar">
+        <img src="/images/hanbargarbar-icon.png" alt="はんばーがーば" />
+      </NuxtLink>
     </header>
     <NuxtLink to="/new" class="floating-button">
       <img src="/images/newpost-icon.png" alt="新規投稿" />
@@ -14,19 +14,16 @@
     </p>
 
     <p v-if="pending || !favoritesReady">データを読み込み中です...</p>
-    <p v-else-if="error">投稿データの読み込み中にエラーが発生しました: {{ error.message }}</p>
+    <p v-else-if="error">投稿データの読み込み中にエラーが発生しました: {{ error?.message || String(error) }}</p>
 
     <div v-else-if="posts && posts.length > 0" class="post-list">
       <div v-for="post in posts" :key="post.id" class="post-item">
-        <p class="post-sentence">{{ post.body }}</p><button 
-          @click="toggleFavorite(post.id)" 
-          :disabled="!isUserLoggedIn()"
-          class="favorite-button"
-        >
+        <p class="post-sentence">{{ post.body }}</p><button @click="toggleFavorite(post.id)"
+          :disabled="!isUserLoggedIn()" class="favorite-button">
           {{ favorites[post.id] ? '❤️' : '🤍' }}
         </button>
-        
-        
+
+
       </div>
     </div>
     <p v-else>トキメキはまだ届いていません</p>
@@ -172,13 +169,19 @@ const isUserAuthReady = () => getAuth().isAuthReady.value;
 <style scoped>
 .page-container {
   /* 背景画像の設定 */
-  background-image: url('/images/background-2.png'); /* 画像のパス */
-  background-size: cover;           /* 画面全体を覆う */
-  background-position: center;      /* 中央合わせ */
-  background-attachment: fixed;     /* スクロールしても背景は動かない */
-  background-repeat: no-repeat;     /* 繰り返し禁止 */
-  
-  width: 100vw;          /* 画面の横幅いっぱいに固定 */
+  background-image: url('/images/background-2.png');
+  /* 画像のパス */
+  background-size: cover;
+  /* 画面全体を覆う */
+  background-position: center;
+  /* 中央合わせ */
+  background-attachment: fixed;
+  /* スクロールしても背景は動かない */
+  background-repeat: no-repeat;
+  /* 繰り返し禁止 */
+
+  width: 100vw;
+  /* 画面の横幅いっぱいに固定 */
   min-height: 100vh;
   margin: 0;
   padding: 0;
@@ -187,32 +190,41 @@ const isUserAuthReady = () => getAuth().isAuthReady.value;
 
 .main-header {
   /*background: #B4EBE6;*/
-  position: sticky;    /* スクロールしても上部に残る */
+  position: sticky;
+  /* スクロールしても上部に残る */
   top: 0;
   width: 100%;
   z-index: 100;
   /*border-bottom: 80px solid #B4EBE6;*/
   margin-bottom: 20px;
 }
-.hanbargarbar{
-  width: 80px;         /* お好みのサイズに調整してください */
+
+.hanbargarbar {
+  width: 80px;
+  /* お好みのサイズに調整してください */
   height: 80px;
   top: 160px;
-  left: 60px; 
+  left: 60px;
 }
 
 /*新規作成ぼたん*/
 .floating-button {
-  position: fixed;     /* 画面に対して固定位置にする */
-  bottom: 40px;        /* 下からpx */
-  right: 40px;         /* 右からpx */
-  z-index: 1000;       /* 他の要素より上に表示する */
-  transition: transform 0.2s; /* ホバー時のアニメーション用 */
+  position: fixed;
+  /* 画面に対して固定位置にする */
+  bottom: 40px;
+  /* 下からpx */
+  right: 40px;
+  /* 右からpx */
+  z-index: 1000;
+  /* 他の要素より上に表示する */
+  transition: transform 0.2s;
+  /* ホバー時のアニメーション用 */
 }
 
 /* 投稿ボタン */
 .floating-button img {
-  width: 80px;         /* お好みのサイズに調整してください */
+  width: 80px;
+  /* お好みのサイズに調整してください */
   height: 80px;
   cursor: pointer;
   /* 画像の影 */
@@ -223,27 +235,35 @@ const isUserAuthReady = () => getAuth().isAuthReady.value;
 .floating-button:hover {
   transform: scale(1.1);
 }
+
 /* 全体 */
 .post-list {
   /*max-width: 600px;    /* 投稿の最大横幅を制限 */
-  margin: 0 auto;      /* 上下0、左右を自動計算（これで中央に寄る） */
-  padding: 50px;       /* 端に少し余白を作る */
+  margin: 0 auto;
+  /* 上下0、左右を自動計算（これで中央に寄る） */
+  padding: 50px;
+  /* 端に少し余白を作る */
 }
 
 /* 2. 各投稿カードのスタイル */
 .post-item {
   white-space: pre-wrap;
-  background-color: #B4EBE680; /* 透けさせる */
+  background-color: #B4EBE680;
+  /* 透けさせる */
   /*background-color: #FBF8EF;*/
   border: 1px solid #FFB433;
-  border-radius: 20px;  /* 角を丸く */
+  border-radius: 20px;
+  /* 角を丸く */
   padding: 25px;
-  margin-bottom: 20px; /* 投稿ごとの間隔 */
-  text-align: left;    /* 文章自体は左揃えにする（読みやすさのため） */
+  margin-bottom: 20px;
+  /* 投稿ごとの間隔 */
+  text-align: left;
+  /* 文章自体は左揃えにする（読みやすさのため） */
   /*box-shadow: 0 2px 4px rgba(0,0,0,0.3); /* 軽い影をつけて浮かせる */
 }
-.post-sentence{
-  font-size:20px;
+
+.post-sentence {
+  font-size: 20px;
 }
 
 /* 3. タイトルなどの装飾 */
@@ -270,5 +290,6 @@ h3 {
 .favorite-button:disabled {
   border-color: #ccc;
   color: #ccc;
-  cursor: not-allowed;}
+  cursor: not-allowed;
+}
 </style>

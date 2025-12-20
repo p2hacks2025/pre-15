@@ -19,7 +19,6 @@
             <div v-for="(line, index) in lines" :key="index" class="input-line">
               <input v-model="lines[index]" :placeholder="placeholders[index]" :maxlength="maxChars[index]"
                 :disabled="!isLoggedIn || isSubmitting" type="text" class="tanka-field" />
-              <span class="char-counter">{{ lines[index].length }}/{{ maxChars[index] }}</span>
             </div>
           </div>
         </div>
@@ -96,7 +95,7 @@ const errorMessage = ref('');
 // 背景切替用の配列
 const lines = ref(['', '', '', '', '']);
 const maxChars = [9, 11, 9, 11, 11];
-const placeholders = ['五', '七', '五', '七', '七'];
+const placeholders = ['◯◯◯◯◯', '◯◯◯◯◯◯◯', '◯◯◯◯◯', '◯◯◯◯◯◯', '◯◯◯◯◯◯'];
 
 // 背景切替用の配列（色または将来の画像URLを格納します）
 const text_backgrounds = [
@@ -341,13 +340,6 @@ const submitPost = async () => {
   font-family: inherit;
   outline: none;
   color: #2f1000;
-}
-
-.char-counter {
-  font-size: 10px;
-  color: #999;
-  margin-left: 8px;
-  min-width: 25px;
 }
 
 .body-wrapper {

@@ -17,7 +17,7 @@
     </header>
 
     <NuxtLink to="/new" class="floating-button">
-      <img src="/images/newpost-icon.png" alt="新規投稿" class="nav-icon-img" />
+      <img src="/images/newpost-icon2.png" alt="新規投稿" class="nav-icon-img" />
     </NuxtLink>
 
     <div v-if="pending || !favoritesReady" class="loading">

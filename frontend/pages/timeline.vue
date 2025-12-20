@@ -15,7 +15,7 @@
     </p>
 
     <div v-if="pending || !favoritesReady" class="loading">
-      <img src="/images/load.webp" alt="読み込み中" class="loading-image" />
+      <img :src="loadImg" alt="読み込み中" class="loading-image" />
       <p>データを読み込み中です...</p>
     </div>
     <p v-else-if="error">投稿データの読み込み中にエラーが発生しました: {{ error?.message || String(error) }}</p>
@@ -64,6 +64,7 @@ const error = ref(null);
 const favorites = ref({});
 const favoritesReady = ref(false);
 
+const loadImg = 'images/load.webp';
 
 // 1. 投稿データの取得 (onMountedでクライアント側で実行) 
 const fetchAllPosts = async () => {

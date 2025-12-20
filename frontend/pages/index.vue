@@ -1,78 +1,78 @@
 <template>
-  <div class="welcome-container">
-    <h1>掲示板へようこそ！</h1>
-    <p class="subtitle">ログインして、皆の投稿を見たり、自分の考えをシェアしましょう。</p>
-
-    <div class="actions">
-      <NuxtLink to="/timeline" class="button primary">
-        投稿一覧を見る
-      </NuxtLink>
-      <NuxtLink to="/auth" class="button secondary">
-        ログイン / 新規登録
-      </NuxtLink>
+  <div class="hero-container" @click="goExplain" role="button" tabindex="0" @keyup.enter="goExplain">
+    <div class="logo-wrapper">
+      <Transition name="fade-fast" @after-leave="goExplain">
+        <img v-if="showLogo && logoUrl" :src="logoUrl" alt="App Logo" class="logo-image" />
+      </Transition>
     </div>
   </div>
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue';
+const router = useRouter();
+const logoUrl = "images/title-icon.png";
+
+const showLogo = ref(false);
+
+const goExplain = () => {
+  router.push('/explain');
+};
+
+// 画面が表示された時の処理
+onMounted(() => {
+  setTimeout(() => {
+    showLogo.value = true;
+  }, 1000);
+
+  setTimeout(() => {
+     showLogo.value = false; 
+  }, 3100);
+});
 </script>
 
 <style scoped>
-.welcome-container {
-  max-width: 800px;
-  margin: 100px auto;
-  padding: 40px;
-  text-align: center;
-  background-color: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+/* --- アニメーションの設定 --- */
+.fade-fast-enter-active {
+  transition: opacity 0.8s ease-out; 
+}
+.fade-fast-leave-active {
+  transition: opacity 1.2s ease-in;
 }
 
-h1 {
-  font-size: 2.5em;
-  color: #333;
-  margin-bottom: 10px;
+.fade-fast-enter-from,
+.fade-fast-leave-to {
+  opacity: 0;
 }
 
-.subtitle {
-  font-size: 1.2em;
-  color: #666;
-  margin-bottom: 40px;
-}
-
-.actions {
+.hero-container {
   display: flex;
+  align-items: center;
   justify-content: center;
-  gap: 20px;
+  min-height: 100vh;
+  background-image: url('/images/bg-kira7.png');
+  background-size: auto 100vh;
+  background-position: center top;
+  background-repeat: no-repeat;
+  cursor: pointer;
 }
 
-.button {
-  display: inline-block;
-  padding: 12px 25px;
-  border-radius: 6px;
-  text-decoration: none;
+.logo-wrapper {
+  /* ロゴが消えても高さがズレないように固定するのがコツ */
+  min-height: 300px; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-image {
+  max-width: 300px;
+  height: auto;
+}
+
+.fallback-logo {
+  font-size: 4rem;
   font-weight: bold;
-  transition: all 0.3s ease;
-}
-
-.primary {
-  background-color: #4CAF50;
-  color: white;
-}
-
-.primary:hover {
-  background-color: #45a049;
-  transform: translateY(-2px);
-}
-
-.secondary {
-  background-color: #f0f0f0;
-  color: #333;
-  border: 1px solid #ddd;
-}
-
-.secondary:hover {
-  background-color: #e0e0e0;
-  transform: translateY(-2px);
+  letter-spacing: 0.1em;
 }
 </style>

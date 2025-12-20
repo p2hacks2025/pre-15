@@ -1,12 +1,10 @@
 <template>
   <div class="hero-container" @click="goAuth" role="button" tabindex="0" @keyup.enter="goAuth">
-    <div class="content-wrapper">
-      <Transition name="fade-fast" @after-leave="goAuth">
-        <div v-if="showContent" class="explain-box">
-          <h2 class="explain-text"><span>あなたのトキメキを</span><span>詩にしよう！</span></h2>
-        </div>
-      </Transition>
-    </div>
+    <Transition name="fade-fast" @after-leave="goAuth">
+      <div v-if="showContent" class="explain-box">
+        <h2 class="explain-text"><span>あなたのトキメキを</span><span>詩にしよう！</span></h2>
+      </div>
+    </Transition>
   </div>
 </template>
 
@@ -16,7 +14,6 @@ const router = useRouter();
 
 // 表示フラグ
 const showContent = ref(false);
-
 
 const goAuth = () => {
   router.push('/auth');
@@ -47,14 +44,12 @@ onMounted(() => {
   opacity: 0;
 }
 
-/* --- レイアウト --- */
 .hero-container {
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
   background-image: url('/images/bg-kira7.png');
-  /* 背景を統一 */
   background-size: auto 100vh;
   background-position: center top;
   background-repeat: no-repeat;
@@ -107,7 +102,6 @@ onMounted(() => {
 
 .explain-text span+span {
   margin-top: 0.25rem;
-  /* small gap between lines */
 }
 
 .logo-wrapper {

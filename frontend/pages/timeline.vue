@@ -1,11 +1,9 @@
 <template>
   <div class="page-container">
     <header class="main-header">
-      <div class="header-top">
-        <NuxtLink to="/setting" class="hanbargarbar">
-          <img src="/images/hanbargarbar-icon.png" alt="メニュー" />
-        </NuxtLink>
-      </div>
+      <NuxtLink to="/setting" class="hanbargarbar">
+        <img src="/images/hanbargarbar-icon.png" alt="メニュー" />
+      </NuxtLink>
       <nav class="tab-menu">
         <NuxtLink to="/timeline" class="tab-item" active-class="active">
           ホーム
@@ -73,7 +71,7 @@ const favoritesReady = ref(false);
 
 const loadImg = 'images/load.webp';
 
-// 1. 投稿データの取得 (onMountedでクライアント側で実行) 
+// 投稿データの取得 (onMountedでクライアント側で実行) 
 const fetchAllPosts = async () => {
   pending.value = true;
   error.value = null;
@@ -93,7 +91,7 @@ const fetchAllPosts = async () => {
   }
 };
 
-// 2. いいね情報の取得
+// お気に入りの取得
 const fetchFavorites = async () => {
   const { uid, isLoggedIn } = getAuth();
   if (!isLoggedIn.value || !uid.value) {
@@ -121,7 +119,7 @@ const fetchFavorites = async () => {
 }
 
 const getPostStyle = (post) => {
-  // backgroundデータがない場合（古い投稿など）はデフォルト色を返す
+  // backgroundデータがない場合はデフォルト色を返す
   if (!post || !post.background) {
     return { backgroundColor: '#FFF8E6' };
   }
@@ -141,7 +139,7 @@ const getPostStyle = (post) => {
   return { backgroundColor: b.color };
 };
 
-// クライアントサイドでの実行を保証
+// クライアントサイドの実行保証
 onMounted(() => {
   fetchAllPosts(); // 投稿一覧はログイン状態に関わらずロード
 });
@@ -156,7 +154,7 @@ watch([() => getAuth().isAuthReady.value, () => getAuth().uid.value], () => {
 }, { immediate: true });
 
 
-// 3. いいねのトグル処理 
+// お気に入り 
 const toggleFavorite = async (postId) => {
   const { uid, isLoggedIn } = getAuth();
   if (!isLoggedIn.value) {
@@ -259,7 +257,7 @@ const isUserAuthReady = () => getAuth().isAuthReady.value;
   left: 60px;
 }
 
-/*新規作成ぼたん*/
+/* 新規作成 */
 .floating-button {
   position: fixed;
   bottom: 40px;
@@ -302,7 +300,7 @@ const isUserAuthReady = () => getAuth().isAuthReady.value;
   padding: 50px;
 }
 
-/* 投稿カードとボタンを横に並べるためのラッパー */
+/* 投稿とボタンを横に並べる */
 .post-wrapper {
   display: flex;
   align-items: flex-end;
@@ -310,7 +308,7 @@ const isUserAuthReady = () => getAuth().isAuthReady.value;
   width: 100%;
 }
 
-/* --- 投稿カードのデザイン --- */
+/* 投稿 */
 .post-item {
   border: 0.3px solid #2f1000;
   flex: 1;
@@ -323,7 +321,7 @@ const isUserAuthReady = () => getAuth().isAuthReady.value;
   transition: transform 0.2s;
 }
 
-/* --- いいねボタン --- */
+/* いいねボタン */
 .favorite-btn-img {
   background: none;
   border: none;
@@ -337,7 +335,7 @@ const isUserAuthReady = () => getAuth().isAuthReady.value;
   object-fit: contain;
 }
 
-/* --- 投稿ボタン --- */
+/* 投稿ボタン */
 .floating-button {
   position: fixed;
   bottom: 30px;

@@ -14,17 +14,10 @@
 
       <!-- テキスト入力エリア -->
       <div class="body-wrapper">
-        <div class="sticky-note" :style="currentBgStyle">
-          <div class="tanka-inputs">
-            <div v-for="(line, index) in lines" :key="index" class="input-line">
-              <input v-model="lines[index]" :placeholder="placeholders[index]" :maxlength="maxChars[index]"
-                :disabled="!isLoggedIn || isSubmitting" type="text" class="tanka-field" />
-              <span class="char-counter">{{ lines[index].length }}/{{ maxChars[index] }}</span>
-            </div>
-          </div>
-        </div>
+        <textarea id="body" class="sticky-note" v-model="body" required :disabled="!isLoggedIn || isSubmitting"
+          :style="currentBgStyle"></textarea>
 
-        <!-- 共有ボタン -->
+        <!-- 共有ボタン（現状は機能なし） -->
         <button type="button" class="share-btn" aria-label="共有" @click="onShareClick">
           <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000">
             <path
@@ -32,7 +25,7 @@
           </svg>
         </button>
 
-        <!-- 背景選択 -->
+        <!-- 背景選択（スワイプで切替） -->
         <div class="bg-controls" aria-hidden="false">
           <div class="bg-swipe-area" role="group" aria-label="背景をスワイプで切替" @pointerdown="onPointerDown"
             @pointerup="onPointerUp" @touchstart.prevent="onTouchStart" @touchend.prevent="onTouchEnd">
@@ -92,11 +85,6 @@ const body = ref('');
 const isSubmitting = ref(false);
 const successMessage = ref('');
 const errorMessage = ref('');
-
-// 背景切替用の配列
-const lines = ref(['', '', '', '', '']);
-const maxChars = [9, 11, 9, 11, 11];
-const placeholders = ['五', '七', '五', '七', '七'];
 
 // 背景切替用の配列（色または将来の画像URLを格納します）
 const text_backgrounds = [
@@ -168,8 +156,10 @@ const handleSwipe = (dx) => {
   const threshold = 40; // px
   if (Math.abs(dx) < threshold) return;
   if (dx < 0) {
+    // swipe left -> next
     bgIndex.value = (bgIndex.value + 1) % text_backgrounds.length;
   } else {
+    // swipe right -> prev
     bgIndex.value = (bgIndex.value - 1 + text_backgrounds.length) % text_backgrounds.length;
   }
 };
@@ -182,22 +172,8 @@ const nextBg = () => {
   bgIndex.value = (bgIndex.value + 1) % text_backgrounds.length;
 };
 
-const onShareClick = async () => {
+const onShareClick = () => {
   console.log('共有ボタンが押されました');
-  const currentBg = text_backgrounds[bgIndex.value];
-  const bgDescription = currentBg.type === 'color' ? `背景色：${currentBg.color}` : '画像背景';
-  const content = body.value || "（本文なし）";
-  const shareText = `${content}%0A%0Aみんなも「てかマジ」で日々のキラキラを共有しよう！%0A#p2hacks  #てかマジ%0A`;
-  const shareUrl = 'https://google.com';
-  /* X専用リンク */
-  const xUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText.replace(/%0A/g, '\n'))}&url=${encodeURIComponent(shareUrl)}`;
-
-  try {
-    window.open(xUrl, '_blank');
-
-  } catch (err) {
-    console.error('共有エラー:', err);
-  }
 };
 
 const submitPost = async () => {
@@ -208,29 +184,6 @@ const submitPost = async () => {
     return;
   }
 
-  // 未入力の場合投稿不可
-  if (lines.value.every(l => l.trim() === '')) {
-    errorMessage.value = '内容を入力してください。';
-    return;
-  }
-
-  const filledLines = lines.value.map(l => l.trim()).filter(l => l !== '');
-  const lineCount = filledLines.length;
-
-  // 3行（575）でもなく、5行（57577）でもない場合はエラー
-  if (lineCount !== 3 && lineCount !== 5) {
-    errorMessage.value = '「五・七・五」または「五・七・五・七・七」の形式で入力してください。';
-    return;
-  }
-
-  // 最初の行から数えて lineCount 分がすべて埋まっているか確認
-  for (let i = 0; i < lineCount; i++) {
-    if (lines.value[i].trim() === '') {
-      errorMessage.value = '上から順番に行を埋めてください。';
-      return;
-    }
-  }
-
   if (isSubmitting.value) return;
 
   isSubmitting.value = true;
@@ -238,22 +191,21 @@ const submitPost = async () => {
   errorMessage.value = '';
 
   try {
-    // 改行をした1つの文にする
-    const combinedBody = filledLines.join('\n');
-    const { $firestore } = useNuxtApp();
+    const { $firestore } = useNuxtApp(); // 関数内で $firestore を取得
     const postsCollection = collection($firestore, 'posts');
     await addDoc(postsCollection, {
-      body: combinedBody, // 結合したテキストを保存
+      body: body.value,
       userId: uid.value,
       createdAt: serverTimestamp(),
-      background: text_backgrounds[bgIndex.value]
+      background: text_backgrounds[bgIndex.value] 
     });
+    router.push('/timeline');
+
     successMessage.value = '投稿が完了しました！';
     title.value = '';
     body.value = '';
-
-    // 投稿一覧へリダイレクト
-    router.push('/timeline');
+    // 投稿一覧へリダイレクト（任意）
+    // router.push('/');
 
   } catch (error) {
     console.error("投稿エラー:", error);
@@ -265,6 +217,7 @@ const submitPost = async () => {
 </script>
 
 <style scoped>
+/* 投稿フォームのコンテナ */
 .new-post-container {
   position: relative;
   max-width: 420px;
@@ -295,6 +248,7 @@ const submitPost = async () => {
   display: block;
   margin: 0 auto;
   width: min(80vw, 320px);
+  /* 画面幅に応じて最大320px */
   aspect-ratio: 1 / 1;
   max-height: 60vh;
   background-color: #FBF8EF;
@@ -309,45 +263,13 @@ const submitPost = async () => {
   font-family: inherit;
   z-index: 10;
   overflow: auto;
+  /* 内部でスクロール可能 */
   min-height: 120px;
 }
 
 .sticky-note:focus {
   outline: none;
   box-shadow: none;
-}
-
-.tanka-inputs {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  height: 100%;
-  width: 100%;
-}
-
-.input-line {
-  display: flex;
-  align-items: center;
-  border-bottom: 1px dotted rgba(0, 0, 0, 0.1);
-  /* ガイド線 */
-  padding: 4px 0;
-}
-
-.tanka-field {
-  flex: 1;
-  background: transparent;
-  border: none;
-  font-size: 20px;
-  font-family: inherit;
-  outline: none;
-  color: #2f1000;
-}
-
-.char-counter {
-  font-size: 10px;
-  color: #999;
-  margin-left: 8px;
-  min-width: 25px;
 }
 
 .body-wrapper {
@@ -359,6 +281,7 @@ const submitPost = async () => {
   gap: 12px;
 }
 
+/* 背景スライダーとプレビュー */
 .bg-controls {
   width: min(80vw, 320px);
   max-width: 100%;
@@ -420,6 +343,7 @@ const submitPost = async () => {
   background-position: center;
 }
 
+/* サムネイル群 */
 .bg-thumbs {
   display: flex;
   gap: 12px;
@@ -576,6 +500,7 @@ const submitPost = async () => {
   margin-top: 15px;
 }
 
+/* 警告ボックスのスタイル */
 .warning-box {
   padding: 10px;
   background-color: #ffe0b2;

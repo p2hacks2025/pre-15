@@ -250,10 +250,10 @@ const isUserAuthReady = () => getAuth().isAuthReady.value;
 }
 
 .loading-image {
-  width: 160px;
+  width: 120px;
   height: auto;
   object-fit: contain;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 /* 全体 */

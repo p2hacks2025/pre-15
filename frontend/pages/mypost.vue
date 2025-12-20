@@ -15,7 +15,7 @@
       </p>
     </div>
 
-    <div v-if="pending || !favoritesReady" class="loading">
+    <div v-if="pending" class="loading">
       <img src="/images/load.webp" alt="読み込み中" class="loading-image" />
       <p>データを読み込み中です...</p>
     </div>
@@ -141,5 +141,21 @@ const formatTimestamp = (timestamp) => {
 .post-item h3 {
   margin-top: 0;
   color: #333;
+}
+
+/* 読み込み中の表示 */
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+.loading-image {
+  width: 120px;
+  height: auto;
+  object-fit: contain;
+  margin-bottom: 12px;
 }
 </style>

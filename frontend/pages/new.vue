@@ -545,7 +545,7 @@ const submitPost = async () => {
   background-color: #80CBC4;
   color: white;
   border: none;
-  /*border-radius: 6px;*/
+  border-radius: 6px;
   font-size: 1rem;
   font-weight: bold;
   cursor: pointer;

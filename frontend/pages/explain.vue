@@ -1,9 +1,9 @@
 <template>
-  <div class="hero-container">
+  <div class="hero-container" @click="goAuth" role="button" tabindex="0" @keyup.enter="goAuth">
     <div class="content-wrapper">
       <Transition name="fade-fast" @after-leave="goAuth">
         <div v-if="showContent" class="explain-box">
-            <h2 class="explain-text"><span>あなたのトキメキを</span><span>詩にしよう！</span></h2>
+          <h2 class="explain-text"><span>あなたのトキメキを</span><span>詩にしよう！</span></h2>
         </div>
       </Transition>
     </div>
@@ -29,7 +29,7 @@ onMounted(() => {
 
   setTimeout(() => {
     showContent.value = false;
-  }, 3100); 
+  }, 3100);
 });
 </script>
 
@@ -37,6 +37,7 @@ onMounted(() => {
 .fade-fast-enter-active {
   transition: opacity 0.8s ease-out;
 }
+
 .fade-fast-leave-active {
   transition: opacity 1.2s ease-in;
 }
@@ -52,7 +53,8 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background-image: url('/images/bg-kira7.png'); /* 背景を統一 */
+  background-image: url('/images/bg-kira7.png');
+  /* 背景を統一 */
   background-size: auto 100vh;
   background-position: center top;
   background-repeat: no-repeat;
@@ -71,54 +73,55 @@ onMounted(() => {
   margin-bottom: 20px;
   letter-spacing: 0.05em;
 }
+
 .hero-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    background-image: url('/images/bg-n.png');
-    background-size: auto 100vh;
-    background-position: center top;
-    background-repeat: no-repeat;
-    cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-image: url('/images/bg-n.png');
+  background-size: auto 100vh;
+  background-position: center top;
+  background-repeat: no-repeat;
+  cursor: pointer;
 }
 
 .content {
-    position: relative;
-    z-index: 2;
-    text-align: center;
-    color: #000000;
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  color: #000000;
 }
 
 .explain-text {
-    font-size: 2rem;
-    font-weight: 700;
-    margin: 0;
-    padding: 0 1rem;
-    line-height: 1.25;
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0;
+  padding: 0 1rem;
+  line-height: 1.25;
 }
 
 .explain-text span {
-    display: block;
+  display: block;
 }
 
 .explain-text span+span {
-    margin-top: 0.25rem;
-    /* small gap between lines */
+  margin-top: 0.25rem;
+  /* small gap between lines */
 }
 
 .logo-wrapper {
-    margin-bottom: 2rem;
+  margin-bottom: 2rem;
 }
 
 .logo-image {
-    max-width: 300px;
-    height: auto;
+  max-width: 300px;
+  height: auto;
 }
 
 .fallback-logo {
-    font-size: 4rem;
-    font-weight: bold;
-    letter-spacing: 0.1em;
+  font-size: 4rem;
+  font-weight: bold;
+  letter-spacing: 0.1em;
 }
 </style>

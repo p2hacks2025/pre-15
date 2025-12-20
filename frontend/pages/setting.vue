@@ -4,8 +4,25 @@
             <a href="#" class="hanbargarbar" @click.prevent="goBack">
                 <img src="/images/hanbargarbar-icon.png" alt="メニュー閉じる" />
             </a>
-            <NuxtLink to="/mypost">>> 自分の投稿を管理する</NuxtLink>
         </header>
+
+        <div v-if="!isLoggedIn()" class="warning-box">
+            設定を行うにはログインが必要です。
+            <NuxtLink to="/auth">ログイン/登録はこちら</NuxtLink>
+        </div>
+
+        <div class="btns-container">
+            <button class="btn" :disabled="!isLoggedIn()">
+                メールアドレスの変更
+            </button>
+            <button class="btn" :disabled="!isLoggedIn()">
+                パスワードの変更
+            </button>
+            <button class="btn" :disabled="!isLoggedIn()" @click.prevent="goBack">
+                自分の投稿を管理する
+            </button>
+        </div>
+
     </div>
 </template>
 
@@ -26,14 +43,18 @@ const goBack = () => {
     }
 };
 
+const goMypost = () => {
+    router.push('/mypost');
+};
+
 // ログイン状態の判定
-const isUserLoggedIn = () => getAuth().isLoggedIn.value;
-const isUserAuthReady = () => getAuth().isAuthReady.value;
+const isLoggedIn = () => getAuth().isLoggedIn.value;
+const isAuthReady = () => getAuth().isAuthReady.value;
 </script>
 
 <style scoped>
 .page-container {
-    background-image: url('/images/background-2.png');
+    background-image: url('/images/background-1.png');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
@@ -61,5 +82,44 @@ const isUserAuthReady = () => getAuth().isAuthReady.value;
     height: 80px;
     top: 160px;
     left: 60px;
+}
+
+.btns-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    padding: 20px;
+}
+
+.btn {
+    width: 300px;
+    padding: 10px 22px;
+    background: #FBF8EF;
+    color: #000000;
+    border: 5px solid #B4EBE6;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 20px;
+    text-align: center;
+}
+
+.btn:disabled {
+    background: #aaa;
+    cursor: not-allowed;
+}
+
+.warning-box {
+    padding: 10px;
+    background-color: #ffe0b2;
+    color: #e65100;
+    border-radius: 4px;
+    margin-bottom: 15px;
+}
+
+.warning-box a {
+    color: #e65100;
+    font-weight: bold;
+    text-decoration: none;
 }
 </style>

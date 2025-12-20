@@ -540,12 +540,14 @@ const submitPost = async () => {
 }
 
 .submit-btn {
-  width: fit-content;
-  padding: 10px 22px;
-  background: #FBF8EF;
-  color: #000000;
-  border: 10px solid #B4EBE6;
-  border-radius: 6px;
+  width: 100%;
+  padding: 12px;
+  background-color: #80CBC4;
+  color: white;
+  border: none;
+  /*border-radius: 6px;*/
+  font-size: 1rem;
+  font-weight: bold;
   cursor: pointer;
   transition: background-color 0.3s, opacity 0.3s;
 }

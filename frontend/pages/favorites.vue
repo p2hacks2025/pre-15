@@ -15,7 +15,10 @@
       </p>
     </div>
 
-    <p v-else-if="pending">データを読み込み中です...</p>
+    <div v-if="pending" class="loading">
+      <img src="/images/load.webp" alt="読み込み中" class="loading-image" />
+      <p>データを読み込み中です...</p>
+    </div>
     <p v-else-if="error">データの読み込み中にエラーが発生しました: {{ error.message }}</p>
 
     <div v-else-if="favoritePosts.length > 0" class="post-list">
@@ -150,5 +153,21 @@ watch([isAuthReady, uid], () => {
 
 .post-item h3 {
   margin-top: 0;
+}
+
+/* 読み込み中の表示 */
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+.loading-image {
+  width: 120px;
+  height: auto;
+  object-fit: contain;
+  margin-bottom: 12px;
 }
 </style>

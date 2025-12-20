@@ -31,6 +31,9 @@
 ## スクリーンショット(任意)
 <img width="362" height="807" alt="2025-12-20_163809" src="https://github.com/user-attachments/assets/451625ca-0ee6-42ad-808d-05cebf2e7ceb" />
 <img width="362" height="807" alt="スクリーンショット 2025-12-20 170343" src="https://github.com/user-attachments/assets/901bd245-8c46-43ba-9eba-0d406a7ba6ea" />
+<img width="365" height="807" alt="スクリーンショット 2025-12-20 235611" src="https://github.com/user-attachments/assets/dd70894c-10d4-48a4-9599-6a429f899e38" />
+<img width="362" height="809" alt="スクリーンショット 2025-12-20 235428" src="https://github.com/user-attachments/assets/909e106c-25c8-47b6-b00d-6939b04a7601" />
+
 
 ## 開発体制
 

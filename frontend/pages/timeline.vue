@@ -1,41 +1,43 @@
 <template>
-  <div class="page-container">
-    <header class="main-header">
-      <NuxtLink to="/setting" class="hanbargarbar">
-        <img src="/images/hanbargarbar-icon.png" alt="メニュー" />
+  <div class="hero-container">
+    <div class="page-container">
+      <header class="main-header">
+        <NuxtLink to="/setting" class="hanbargarbar">
+          <img src="/images/hanbargarbar-icon.png" alt="メニュー" />
+        </NuxtLink>
+        <nav class="tab-menu">
+          <NuxtLink to="/timeline" class="tab-item" active-class="active">
+            ホーム
+          </NuxtLink>
+          <NuxtLink to="/favorites" class="tab-item" active-class="active">
+            お気に入り
+          </NuxtLink>
+        </nav>
+      </header>
+
+      <NuxtLink to="/new" class="floating-button">
+        <img src="/images/newpost-icon2.png" alt="新規投稿" class="nav-icon-img" />
       </NuxtLink>
-      <nav class="tab-menu">
-        <NuxtLink to="/timeline" class="tab-item" active-class="active">
-          ホーム
-        </NuxtLink>
-        <NuxtLink to="/favorites" class="tab-item" active-class="active">
-          お気に入り
-        </NuxtLink>
-      </nav>
-    </header>
 
-    <NuxtLink to="/new" class="floating-button">
-      <img src="/images/newpost-icon.png" alt="新規投稿" class="nav-icon-img" />
-    </NuxtLink>
+      <div v-if="pending || !favoritesReady" class="loading">
+        <img :src="loadImg" alt="読み込み中" class="loading-image" />
+        <p>データを読み込み中です...</p>
+      </div>
+      <p v-else-if="error">投稿データの読み込み中にエラーが発生しました: {{ error?.message || String(error) }}</p>
 
-    <div v-if="pending || !favoritesReady" class="loading">
-      <img :src="loadImg" alt="読み込み中" class="loading-image" />
-      <p>データを読み込み中です...</p>
-    </div>
-    <p v-else-if="error">投稿データの読み込み中にエラーが発生しました: {{ error?.message || String(error) }}</p>
+      <div v-else-if="posts && posts.length > 0" class="post-list">
+        <div v-for="post in posts" :key="post.id" class="post-wrapper">
+          <div class="post-item" :style="getPostStyle(post)">
+            <p class="post-body">{{ post.body }}</p>
+          </div>
+          <div class="side-action">
+            <button @click="toggleFavorite(post.id)" :disabled="!isUserLoggedIn()" class="favorite-btn-img">
+              <img :src="favorites[post.id] ? '/images/favorite.png' : '/images/nonFavorite.png'" alt="いいね"
+                class="fav-icon-size" />
+            </button>
+          </div>
 
-    <div v-else-if="posts && posts.length > 0" class="post-list">
-      <div v-for="post in posts" :key="post.id" class="post-wrapper">
-        <div class="post-item" :style="getPostStyle(post)">
-          <p class="post-body">{{ post.body }}</p>
         </div>
-        <div class="side-action">
-          <button @click="toggleFavorite(post.id)" :disabled="!isUserLoggedIn()" class="favorite-btn-img">
-            <img :src="favorites[post.id] ? '/images/favorite.png' : '/images/nonFavorite.png'" alt="いいね"
-              class="fav-icon-size" />
-          </button>
-        </div>
-
       </div>
     </div>
   </div>
@@ -198,6 +200,16 @@ const isUserAuthReady = () => getAuth().isAuthReady.value;
 </script>
 
 <style scoped>
+.hero-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-size: auto 100vh;
+  background-position: center top;
+  background-repeat: no-repeat;
+}
+
 .page-container {
   background-image: url('/images/background-1.png');
   background-size: cover;

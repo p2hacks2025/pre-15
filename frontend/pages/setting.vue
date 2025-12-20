@@ -18,7 +18,7 @@
             <button class="btn" :disabled="!isLoggedIn()">
                 パスワードの変更
             </button>
-            <button class="btn" :disabled="!isLoggedIn()" @click.prevent="goBack">
+            <button class="btn" :disabled="!isLoggedIn()" @click.prevent="goMypost">
                 自分の投稿を管理する
             </button>
         </div>

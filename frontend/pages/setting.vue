@@ -41,7 +41,6 @@ const getAuth = () => useAuthUser();
 
 const router = useRouter();
 
-// 前のページに戻る関数
 const goTimeline = () => {
     router.push('/timeline');
 };
@@ -56,7 +55,6 @@ const goTitle = () => {
 
 // ログイン状態の判定
 const isLoggedIn = () => getAuth().isLoggedIn.value;
-const isAuthReady = () => getAuth().isAuthReady.value;
 </script>
 
 <style scoped>
@@ -75,9 +73,7 @@ const isAuthReady = () => getAuth().isAuthReady.value;
 }
 
 .main-header {
-    /*background: #B4EBE6;*/
     position: sticky;
-    /* スクロールしても上部に残る */
     top: 0;
     width: 100%;
     z-index: 100;

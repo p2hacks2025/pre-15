@@ -54,9 +54,7 @@ import {
   query,
   where,
   doc,
-  setDoc,
   deleteDoc,
-  serverTimestamp
 } from 'firebase/firestore';
 
 const getAuth = () => useAuthUser();
@@ -79,17 +77,15 @@ const goSetting = () => {
 };
 
 const deletePost = async (postId) => {
-  // 1. まず「本当に消すか」を確認
   const ok = confirm("この投稿を完全に削除してもよろしいですか？");
-  if (!ok) return; // キャンセルされたら何もしない
+  if (!ok) return;
   try {
     const { $firestore } = useNuxtApp();
-    // 2. Firestoreから削除実行
+
     await deleteDoc(doc($firestore, 'posts', postId));
 
-    // 3. 画面上のリストからも消す（再読み込みなしで反映）
     posts.value = posts.value.filter(p => p.id !== postId);
-    
+
     alert("投稿を削除しました。");
   } catch (e) {
     console.error("削除エラー:", e);
@@ -97,7 +93,6 @@ const deletePost = async (postId) => {
   }
 };
 
-// --- ホームと共通のスタイル取得関数 ---
 const getPostStyle = (post) => {
   if (!post || !post.background) {
     return { backgroundColor: '#FFF8E6' };
@@ -138,7 +133,6 @@ const fetchMyPosts = async () => {
   }
 };
 
-// いいね情報の取得（ホームと共通）
 const fetchFavorites = async () => {
   const { uid, isLoggedIn } = getAuth();
   if (!isLoggedIn.value || !uid.value) return;
@@ -260,27 +254,12 @@ watch([() => getAuth().isAuthReady.value, () => getAuth().uid.value], () => {
   font-size: 16px;
 }
 
-/* --- いいねボタンデザイン --- */
-.favorite-btn-img {
-  background: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-}
-
-.trash-btn-img{
+.trash-btn-img {
   background: none;
   border: none;
   cursor: pointer;
 }
 
-.fav-icon-size {
-  width: 32px;
-  height: 32px;
-  object-fit: contain;
-}
-
-/* 読み込み中・メッセージ系 */
 .loading {
   display: flex;
   flex-direction: column;

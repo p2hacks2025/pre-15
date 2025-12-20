@@ -94,21 +94,17 @@ const authenticate = async () => {
 </script>
 
 <style scoped>
-/* コンテナ全体のレイアウト */
 .auth-container {
-  /* 背景画像の設定 */
-  background-image: url('/images/bgnostar.png'); /* 画像のパス */
-  background-size: cover;           /* 画面全体を覆う */
-  background-position: center;      /* 中央合わせ */
-  background-attachment: fixed;     /* スクロールしても背景は動かない */
-  background-repeat: no-repeat;     /* 繰り返し禁止 */
-
-  width: 100%;          /* 画面の横幅いっぱいに固定 */
+  background-image: url('/images/bgnostar.png');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  width: 100%;
   min-height: 105vh;
   margin: 0;
   padding: 0;
   overflow-x: hidden;
-
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -121,12 +117,9 @@ h1 {
   color: #2F1000;
   margin-bottom: 24px;
   font-size: 1.8rem;
-
   transform: translateY(-40px);
 }
 
-
-/* 入力グループの余白 */
 .form-group {
   margin-bottom: 20px;
 }
@@ -140,14 +133,13 @@ h1 {
   text-align: center;
 }
 
-/* 入力フィールドの装飾 */
 input[type="email"],
 input[type="password"] {
   width: 100%;
   padding: 12px;
   border: 1px solid #FFB433;
   border-radius: 6px;
-  box-sizing: border-box; /* paddingを含めた幅計算 */
+  box-sizing: border-box;
   font-size: 1rem;
   transition: border-color 0.3s;
   text-align: center;
@@ -160,7 +152,6 @@ input:focus {
   border: 1px solid #42b883;
 }
 
-/* ボタンのスタイル */
 button {
   width: 100%;
   padding: 12px;
@@ -183,15 +174,16 @@ button:disabled {
   cursor: not-allowed;
 }
 
-/* 切り替えリンク（新規登録/ログイン） */
+/* 切り替えリンク */
 .toggle-mode {
   margin-top: 20px;
   text-align: center;
   font-size: 0.9rem;
   color: #666;
 }
-/*パスワード6文字以上の書式設定*/
-.password-hint{
+
+/* 警告文 */
+.password-hint {
   margin-top: 5px;
   font-size: 1rem;
   font-weight: 800;
@@ -229,13 +221,12 @@ button:disabled {
   color: #2e7d32;
   border: 1px solid #c8e6c9;
 }
-/* ブラウザの自動入力（オートコンプリート）時の色を上書きする */
+
+/* 自動入力時の色を上書きする */
 input:-webkit-autofill,
-input:-webkit-autofill:hover, 
+input:-webkit-autofill:hover,
 input:-webkit-autofill:focus {
-  /* 文字色を茶色に固定 */
   -webkit-text-fill-color: #2F1000;
-  /* 背景色をベージュ（#FBF8EF）で塗りつぶす設定 */
   transition: background-color 5000s ease-in-out 0s;
 }
 </style>

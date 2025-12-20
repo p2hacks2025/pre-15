@@ -79,6 +79,9 @@
 - Figma(フレームワーク作成)
 - Canva(案出し/発表資料作成)
 - Adobe illustrator(ロゴ作成)
+- ibisPaint(イラスト作成)
+- CapCut(映像作成)
+- AviUtl(アニメーション作成)
 
 コーディング補助
 - GeminiPro

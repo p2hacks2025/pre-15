@@ -212,7 +212,7 @@ const submitPost = async () => {
       body: body.value,
       userId: uid.value,
       createdAt: serverTimestamp(),
-      background: text_backgrounds[bgIndex.value] 
+      background: text_backgrounds[bgIndex.value]
     });
     router.push('/timeline');
 

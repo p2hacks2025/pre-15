@@ -1,29 +1,56 @@
 <template>
-  <div class="hero-container" @click="goExplain" role="button" tabindex="0" @keyup.enter="goExplain"
-    aria-label="説明ページへ移動">
+  <div class="hero-container" @click="goExplain" role="button" tabindex="0" @keyup.enter="goExplain">
     <div class="logo-wrapper">
-      <img v-if="logoUrl" :src="logoUrl" alt="App Logo" class="logo-image" />
-      <h1 v-else class="fallback-logo">APP LOGO</h1>
+      <Transition name="fade-fast" @after-leave="goExplain">
+        <img v-if="showLogo && logoUrl" :src="logoUrl" alt="App Logo" class="logo-image" />
+      </Transition>
     </div>
   </div>
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue';
 const router = useRouter();
-const logoUrl = "images/logo.png";
+const logoUrl = "images/title-icon.png";
+
+const showLogo = ref(false);
 
 const goExplain = () => {
   router.push('/explain');
 };
+
+// 画面が表示された時の処理
+onMounted(() => {
+  setTimeout(() => {
+    showLogo.value = true;
+  }, 1000);
+
+  setTimeout(() => {
+     showLogo.value = false; 
+  }, 3100);
+});
 </script>
 
 <style scoped>
+/* --- アニメーションの設定 --- */
+.fade-fast-enter-active {
+  transition: opacity 0.8s ease-out; 
+}
+.fade-fast-leave-active {
+  transition: opacity 1.2s ease-in;
+}
+
+.fade-fast-enter-from,
+.fade-fast-leave-to {
+  opacity: 0;
+}
+
 .hero-container {
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background-image: url('/images/bg-n.png');
+  background-image: url('/images/bg-kira7.png');
   background-size: auto 100vh;
   background-position: center top;
   background-repeat: no-repeat;
@@ -31,7 +58,11 @@ const goExplain = () => {
 }
 
 .logo-wrapper {
-  margin-bottom: 2rem;
+  /* ロゴが消えても高さがズレないように固定するのがコツ */
+  min-height: 300px; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .logo-image {

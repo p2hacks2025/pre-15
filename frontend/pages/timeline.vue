@@ -1,14 +1,21 @@
 <template>
   <div class="page-container">
     <header class="main-header">
-      <NuxtLink to="/" class="hanbargarbar">
-        <img src="/images/hanbargarbar-icon.png" alt="はんばーがーば" />
-      </NuxtLink>
-      <NuxtLink v-if="isUserLoggedIn()" to="/mypost">>> 自分の投稿を管理する</NuxtLink>
+      <div class="header-top">
+        <NuxtLink to="/setting" class="hanbargarbar">
+          <img src="/images/hanbargarbar-icon.png" alt="メニュー" />
+        </NuxtLink>
+      </div>
+      <nav class="tab-menu">
+        <NuxtLink to="/timeline" class="tab-item" active-class="active">
+          すべての投稿
+        </NuxtLink>
+        <NuxtLink v-if="isUserLoggedIn()" to="/favorites" class="tab-item" active-class="active">
+          いいねした投稿
+        </NuxtLink>
+      </nav>
     </header>
-    <p v-if="isUserLoggedIn()">
-      <NuxtLink to="/favorites">>> 自分がいいねした投稿を見る</NuxtLink>
-    </p>
+
     <NuxtLink to="/new" class="floating-button">
       <img src="/images/newpost-icon.png" alt="新規投稿" class="nav-icon-img" />
     </NuxtLink>
@@ -24,14 +31,11 @@
         <div class="post-item" :style="getPostStyle(post)">
           <p class="post-body">{{ post.body }}</p>
         </div>
-      <div class="side-action">
-        <button @click="toggleFavorite(post.id)" :disabled="!isUserLoggedIn()" class="favorite-btn-img">
-          <img 
-            :src="favorites[post.id] ? '/images/favorite.png' : '/images/nonFavorite.png'"
-              alt="いいね" 
-            class="fav-icon-size"
-          />
-        </button>
+        <div class="side-action">
+          <button @click="toggleFavorite(post.id)" :disabled="!isUserLoggedIn()" class="favorite-btn-img">
+            <img :src="favorites[post.id] ? '/images/favorite.png' : '/images/nonFavorite.png'" alt="いいね"
+              class="fav-icon-size" />
+          </button>
         </div>
 
       </div>
@@ -119,11 +123,11 @@ const fetchFavorites = async () => {
 const getPostStyle = (post) => {
   // backgroundデータがない場合（古い投稿など）はデフォルト色を返す
   if (!post || !post.background) {
-    return { backgroundColor: '#FFF8E6' }; 
+    return { backgroundColor: '#FFF8E6' };
   }
 
   const b = post.background;
-  
+
   // 画像タイプの場合
   if (b.type === 'image' && b.url) {
     return {
@@ -132,7 +136,7 @@ const getPostStyle = (post) => {
       backgroundPosition: 'center'
     };
   }
-  
+
   // カラータイプの場合
   return { backgroundColor: b.color };
 };
@@ -198,7 +202,7 @@ const isUserAuthReady = () => getAuth().isAuthReady.value;
 <style scoped>
 .page-container {
   /* 背景画像の設定 */
-  background-image: url('/images/background-2.png');
+  background-image: url('/images/background-1.png');
   /* 画像のパス */
   background-size: cover;
   /* 画面全体を覆う */
@@ -217,12 +221,54 @@ const isUserAuthReady = () => getAuth().isAuthReady.value;
   overflow-x: hidden;
 }
 
+/* タブ全体のコンテナ */
+.tab-menu {
+  display: flex;
+  justify-content: center;
+  background-color: rgba(255, 248, 230, 0.8);
+  /* 背景と馴染む色 */
+  margin: 0 50px;
+  border-radius: 15px;
+  overflow: hidden;
+  border: 1px solid #B4EBE6;
+}
+
+/* 各タブの基本スタイル */
+.tab-item {
+  flex: 1;
+  text-align: center;
+  padding: 12px 0;
+  text-decoration: none;
+  color: #666;
+  font-weight: bold;
+  transition: all 0.3s;
+  font-size: 14px;
+}
+
+/* ホバー時 */
+.tab-item:hover {
+  background-color: rgba(180, 235, 230, 0.3);
+}
+
+/* 選択されている（アクティブな）タブのスタイル */
+.tab-item.active {
+  background-color: #B4EBE6;
+  color: #2f1000;
+  border-bottom: 3px solid #FFB433;
+  /* 下線で強調 */
+}
+
+/* ヘッダー内の位置調整 */
 .main-header {
   position: sticky;
   top: 0;
   width: 100%;
   z-index: 100;
-  margin-bottom: 20px;
+  background-color: rgba(255, 255, 255, 0.5);
+  /* ヘッダー全体を少し透かす */
+  backdrop-filter: blur(5px);
+  /* 背景をぼかすとおしゃれです */
+  padding-bottom: 10px;
 }
 
 .hanbargarbar {
@@ -230,9 +276,9 @@ const isUserAuthReady = () => getAuth().isAuthReady.value;
   height: 80px;
   top: 160px;
   left: 60px;
-  }
+}
 
-  /*新規作成ぼたん*/
+/*新規作成ぼたん*/
 .floating-button {
   position: fixed;
   /* 画面に対して固定位置にする */
@@ -288,22 +334,26 @@ const isUserAuthReady = () => getAuth().isAuthReady.value;
 /* 投稿カードとボタンを横に並べるためのラッパー */
 .post-wrapper {
   display: flex;
-  align-items: flex-end; /* ボタンを下揃えにする場合。中央なら center */
-  gap: 10px; /* カードとボタンの隙間 */
+  align-items: flex-end;
+  /* ボタンを下揃えにする場合。中央なら center */
+  gap: 10px;
+  /* カードとボタンの隙間 */
   width: 100%;
 }
 
 /* --- 投稿カードのデザイン --- */
 .post-item {
-  border: 0.3px solid #2f1000; /* コンマを消し、solid を追加しました */
-  flex: 1; 
+  border: 0.3px solid #2f1000;
+  /* コンマを消し、solid を追加しました */
+  flex: 1;
   padding: 25px;
   border-radius: 25px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
   min-height: 120px;
   display: flex;
   flex-direction: column;
-  transition: transform 0.2s; /* せっかくなのでここにも入れておきます */
+  transition: transform 0.2s;
+  /* せっかくなのでここにも入れておきます */
 }
 
 /* --- いいねボタン（画像）の調整エリア --- */
@@ -316,8 +366,10 @@ const isUserAuthReady = () => getAuth().isAuthReady.value;
 
 /* ★★★ ここで「いいね」画像のサイズを自由に調整してください ★★★ */
 .fav-icon-size {
-  width: 32px;  /* 横幅 */
-  height: 32px; /* 縦幅 */
+  width: 32px;
+  /* 横幅 */
+  height: 32px;
+  /* 縦幅 */
   object-fit: contain;
 }
 
@@ -331,7 +383,8 @@ const isUserAuthReady = () => getAuth().isAuthReady.value;
 
 /* ★★★ ここで「新規投稿」ボタンのサイズを調整してください ★★★ */
 .nav-icon-img {
-  width: 60px;  /* もとのサイズに合わせて調整してください */
+  width: 60px;
+  /* もとのサイズに合わせて調整してください */
   height: 60px;
   object-fit: contain;
 }

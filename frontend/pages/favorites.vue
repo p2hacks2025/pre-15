@@ -15,7 +15,10 @@
       </p>
     </div>
 
-    <p v-else-if="pending">データを読み込み中です...</p>
+    <div v-if="pending || !favoritesReady" class="loading">
+      <img src="/images/load.webp" alt="読み込み中" class="loading-image" />
+      <p>データを読み込み中です...</p>
+    </div>
     <p v-else-if="error">データの読み込み中にエラーが発生しました: {{ error.message }}</p>
 
     <div v-else-if="favoritePosts.length > 0" class="post-list">

@@ -1,7 +1,7 @@
 <template>
-  <div class="hero-container" @click="goTimeline">
+  <div class="hero-container">
     <div class="content-wrapper">
-      <Transition name="fade-fast" @after-leave="goTimeline">
+      <Transition name="fade-fast" @after-leave="goAuth">
         <div v-if="showContent" class="explain-box">
             <h2 class="explain-text"><span>あなたのトキメキを</span><span>詩にしよう！</span></h2>
         </div>
@@ -17,8 +17,9 @@ const router = useRouter();
 // 表示フラグ
 const showContent = ref(false);
 
-const goTimeline = () => {
-  router.push('/timeline');
+
+const goAuth = () => {
+  router.push('/auth');
 };
 
 onMounted(() => {

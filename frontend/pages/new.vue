@@ -99,10 +99,10 @@ const placeholders = ['◯◯◯◯◯', '◯◯◯◯◯◯◯', '◯◯◯◯�
 
 // 背景切替用の配列（色または将来の画像URLを格納します）
 const text_backgrounds = [
-  { id: 0, type: 'color', color: '#FFF8E6' },
-  { id: 1, type: 'color', color: '#FBF8EF' },
-  { id: 2, type: 'color', color: '#FFF0D9' },
-  { id: 3, type: 'color', color: '#F5F5F5' }
+  { id: 0, type: 'color', color: '#FFC5C5' },
+  { id: 1, type: 'color', color: '#FFEBD8' },
+  { id: 2, type: 'color', color: '#C7DCA7' },
+  { id: 3, type: 'color', color: '#FFFFFF' }
   // { type: 'image', url: '/images/bg1.jpg' }
 ];
 

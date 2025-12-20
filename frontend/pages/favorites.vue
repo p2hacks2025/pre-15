@@ -16,7 +16,7 @@
     </div>
 
     <div v-if="pending" class="loading">
-      <img src="/images/load.webp" alt="読み込み中" class="loading-image" />
+      <img :src="loadImg" alt="読み込み中" class="loading-image" />
       <p>データを読み込み中です...</p>
     </div>
     <p v-else-if="error">データの読み込み中にエラーが発生しました: {{ error.message }}</p>
@@ -53,6 +53,7 @@ const { $firestore } = useNuxtApp();
 const favoritePosts = ref([]);
 const pending = ref(true);
 const error = ref(null);
+const loadImg = 'images/load.webp';
 
 const fetchFavoritePosts = async () => {
   if (!isLoggedIn.value || !uid.value) {

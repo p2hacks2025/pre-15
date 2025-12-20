@@ -482,18 +482,16 @@ const submitPost = async () => {
 }
 
 .close-btn {
-  position: absolute;
-  right: 18px;
-  top: 18px;
+  position: relative;
+  display: flex;
+  margin-left: auto;
+  margin-right: 0;
+  margin-bottom: 10px;
   background: transparent;
   border: none;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
+  width: 44px;
+  height: 44px;
   cursor: pointer;
-  font-size: 18px;
-  line-height: 1;
-  display: inline-flex;
   align-items: center;
   justify-content: center;
   z-index: 60;

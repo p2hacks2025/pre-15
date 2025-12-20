@@ -1,49 +1,51 @@
 <template>
-  <div class="page-container">
-    <header class="main-header">
-      <NuxtLink to="/setting" class="hanbargarbar">
-        <img src="/images/hanbargarbar-icon.png" alt="メニュー" />
-      </NuxtLink>
-      <nav class="tab-menu">
-        <NuxtLink to="/timeline" class="tab-item" active-class="active">
-          ホーム
+  <div class="hero-container">
+    <div class="page-container">
+      <header class="main-header">
+        <NuxtLink to="/setting" class="hanbargarbar">
+          <img src="/images/hanbargarbar-icon.png" alt="メニュー" />
         </NuxtLink>
-        <NuxtLink to="/favorites" class="tab-item" active-class="active">
-          お気に入り
-        </NuxtLink>
-      </nav>
-    </header>
+        <nav class="tab-menu">
+          <NuxtLink to="/timeline" class="tab-item" active-class="active">
+            ホーム
+          </NuxtLink>
+          <NuxtLink to="/favorites" class="tab-item" active-class="active">
+            お気に入り
+          </NuxtLink>
+        </nav>
+      </header>
 
-    <div v-if="!isAuthReady" class="loading">
-      <p>認証情報を読み込み中です...</p>
-    </div>
+      <div v-if="!isAuthReady" class="loading">
+        <p>認証情報を読み込み中です...</p>
+      </div>
 
-    <div v-else-if="!isLoggedIn" class="loading">
-      <p>いいね一覧を見るにはログインが必要です。</p>
-      <NuxtLink to="/auth">ログイン / 新規登録</NuxtLink>
-    </div>
+      <div v-else-if="!isLoggedIn" class="loading">
+        <p>いいね一覧を見るにはログインが必要です。</p>
+        <NuxtLink to="/auth">ログイン / 新規登録</NuxtLink>
+      </div>
 
-    <div v-else-if="pending" class="loading">
-      <img :src="loadImg" alt="読み込み中" class="loading-image" />
-      <p>データを読み込み中です...</p>
-    </div>
+      <div v-else-if="pending" class="loading">
+        <img :src="loadImg" alt="読み込み中" class="loading-image" />
+        <p>データを読み込み中です...</p>
+      </div>
 
-    <p v-else-if="error">エラーが発生しました: {{ error.message }}</p>
+      <p v-else-if="error">エラーが発生しました: {{ error.message }}</p>
 
-    <div v-else-if="favoritePosts.length > 0" class="post-list">
-      <div v-for="post in favoritePosts" :key="post.id" class="post-wrapper">
-        <div class="post-item" :style="getPostStyle(post)">
-          <p class="post-body">{{ post.body }}</p>
-        </div>
-        <div class="side-action">
-          <button class="favorite-btn-img">
-            <img src="/images/favorite.png" alt="いいね" class="fav-icon-size" />
-          </button>
+      <div v-else-if="favoritePosts.length > 0" class="post-list">
+        <div v-for="post in favoritePosts" :key="post.id" class="post-wrapper">
+          <div class="post-item" :style="getPostStyle(post)">
+            <p class="post-body">{{ post.body }}</p>
+          </div>
+          <div class="side-action">
+            <button class="favorite-btn-img">
+              <img src="/images/favorite.png" alt="いいね" class="fav-icon-size" />
+            </button>
+          </div>
         </div>
       </div>
-    </div>
 
-    <p v-else class="loading">まだお気に入りにした投稿はありません。</p>
+      <p v-else class="loading">まだお気に入りにした投稿はありません。</p>
+    </div>
   </div>
 </template>
 

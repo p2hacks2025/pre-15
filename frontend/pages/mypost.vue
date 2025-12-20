@@ -15,7 +15,7 @@
       </p>
     </div>
 
-    <div v-if="pending" class="loading">
+    <div v-if="isUserLoggedIn() && pending" class="loading">
       <img :src="loadImg" alt="読み込み中" class="loading-image" />
       <p>データを読み込み中です...</p>
     </div>

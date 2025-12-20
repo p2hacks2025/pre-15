@@ -201,39 +201,28 @@ const isUserAuthReady = () => getAuth().isAuthReady.value;
 
 <style scoped>
 .page-container {
-  /* 背景画像の設定 */
   background-image: url('/images/background-1.png');
-  /* 画像のパス */
   background-size: cover;
-  /* 画面全体を覆う */
   background-position: center;
-  /* 中央合わせ */
   background-attachment: fixed;
-  /* スクロールしても背景は動かない */
   background-repeat: no-repeat;
-  /* 繰り返し禁止 */
-
   width: 100vw;
-  /* 画面の横幅いっぱいに固定 */
   min-height: 100vh;
   margin: 0;
   padding: 0;
   overflow-x: hidden;
 }
 
-/* タブ全体のコンテナ */
 .tab-menu {
   display: flex;
   justify-content: center;
   background-color: rgba(255, 248, 230, 0.8);
-  /* 背景と馴染む色 */
   margin: 0 50px;
   border-radius: 15px;
   overflow: hidden;
   border: 1px solid #B4EBE6;
 }
 
-/* 各タブの基本スタイル */
 .tab-item {
   flex: 1;
   text-align: center;
@@ -245,29 +234,23 @@ const isUserAuthReady = () => getAuth().isAuthReady.value;
   font-size: 14px;
 }
 
-/* ホバー時 */
 .tab-item:hover {
   background-color: rgba(180, 235, 230, 0.3);
 }
 
-/* 選択されている（アクティブな）タブのスタイル */
 .tab-item.active {
   background-color: #B4EBE6;
   color: #2f1000;
   border-bottom: 3px solid #FFB433;
-  /* 下線で強調 */
 }
 
-/* ヘッダー内の位置調整 */
 .main-header {
   position: sticky;
   top: 0;
   width: 100%;
   z-index: 100;
   background-color: rgba(255, 255, 255, 0.5);
-  /* ヘッダー全体を少し透かす */
   backdrop-filter: blur(5px);
-  /* 背景をぼかすとおしゃれです */
   padding-bottom: 10px;
 }
 
@@ -281,33 +264,24 @@ const isUserAuthReady = () => getAuth().isAuthReady.value;
 /*新規作成ぼたん*/
 .floating-button {
   position: fixed;
-  /* 画面に対して固定位置にする */
   bottom: 40px;
-  /* 下からpx */
   right: 40px;
-  /* 右からpx */
   z-index: 1000;
-  /* 他の要素より上に表示する */
   transition: transform 0.2s;
-  /* ホバー時のアニメーション用 */
 }
 
 /* 投稿ボタン */
 .floating-button img {
   width: 80px;
-  /* お好みのサイズに調整してください */
   height: 80px;
   cursor: pointer;
-  /* 画像の影 */
   filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
 }
 
-/* マウスを乗せた時（タップしたとき）に少し大きくする演出 */
 .floating-button:hover {
   transform: scale(1.1);
 }
 
-/* 読み込み中の表示 */
 .loading {
   display: flex;
   flex-direction: column;
@@ -323,7 +297,6 @@ const isUserAuthReady = () => getAuth().isAuthReady.value;
   margin-bottom: 12px;
 }
 
-/* 全体 */
 .post-list {
   display: flex;
   flex-direction: column;
@@ -335,16 +308,13 @@ const isUserAuthReady = () => getAuth().isAuthReady.value;
 .post-wrapper {
   display: flex;
   align-items: flex-end;
-  /* ボタンを下揃えにする場合。中央なら center */
   gap: 10px;
-  /* カードとボタンの隙間 */
   width: 100%;
 }
 
 /* --- 投稿カードのデザイン --- */
 .post-item {
   border: 0.3px solid #2f1000;
-  /* コンマを消し、solid を追加しました */
   flex: 1;
   padding: 25px;
   border-radius: 25px;
@@ -353,10 +323,9 @@ const isUserAuthReady = () => getAuth().isAuthReady.value;
   display: flex;
   flex-direction: column;
   transition: transform 0.2s;
-  /* せっかくなのでここにも入れておきます */
 }
 
-/* --- いいねボタン（画像）の調整エリア --- */
+/* --- いいねボタン --- */
 .favorite-btn-img {
   background: none;
   border: none;
@@ -364,16 +333,13 @@ const isUserAuthReady = () => getAuth().isAuthReady.value;
   cursor: pointer;
 }
 
-/* ★★★ ここで「いいね」画像のサイズを自由に調整してください ★★★ */
 .fav-icon-size {
   width: 32px;
-  /* 横幅 */
   height: 32px;
-  /* 縦幅 */
   object-fit: contain;
 }
 
-/* --- 投稿ボタン（フローティング）のサイズ修正 --- */
+/* --- 投稿ボタン --- */
 .floating-button {
   position: fixed;
   bottom: 30px;
@@ -381,10 +347,8 @@ const isUserAuthReady = () => getAuth().isAuthReady.value;
   z-index: 100;
 }
 
-/* ★★★ ここで「新規投稿」ボタンのサイズを調整してください ★★★ */
 .nav-icon-img {
   width: 60px;
-  /* もとのサイズに合わせて調整してください */
   height: 60px;
   object-fit: contain;
 }

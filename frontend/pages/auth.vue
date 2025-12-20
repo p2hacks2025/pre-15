@@ -1,39 +1,38 @@
-<template>
+d<template>
   <div class="auth-container">
     <h1>{{ isLogin ? 'ログイン' : '新規登録' }}</h1>
 
-    <div class="form-wrapper">
-      <form @submit.prevent="authenticate">
-        <div class="form-group">
-          <label for="email">メールアドレス</label>
-          <input type="email" id="email" v-model="email" required>
-        </div>
+    <form @submit.prevent="authenticate">
+      <div class="form-group">
+        <label for="email">メールアドレス</label>
+        <input type="email" id="email" v-model="email" required>
+      </div>
 
-        <div class="form-group">
-          <label for="password">パスワード</label>
-          <input type="password" id="password" v-model="password" required>
+      <div class="form-group">
+        <label for="password">パスワード</label>
+        <input type="password" id="password" v-model="password" required>
 
-          <p v-if="!isLogin" class="password-hint">
-            ※6文字以上で入力してください
-          </p>
-        </div>
+        <p v-if="!isLogin" class="password-hint">
+          ※6文字以上で入力してください
+        </p>
+      </div>
 
-        <button type="submit" :disabled="isLoading">
-          {{ isLoading ? '処理中...' : (isLogin ? 'ログイン' : '登録') }}
-        </button>
-      </form>
+      <button type="submit" :disabled="isLoading">
+        {{ isLoading ? '処理中...' : (isLogin ? 'ログイン' : '登録') }}
+      </button>
+    </form>
 
-      <p class="toggle-mode">
-        {{ isLogin ? 'アカウントをお持ちでない方へ' : 'すでにアカウントをお持ちの方へ' }}
-        <a href="#" @click.prevent="isLogin = !isLogin">
-          {{ isLogin ? '新規登録' : 'ログイン' }}はこちら
-        </a>
-      </p>
+    <p class="toggle-mode">
+      {{ isLogin ? 'アカウントをお持ちでない方へ' : 'すでにアカウントをお持ちの方へ' }}
+      <a href="#" @click.prevent="isLogin = !isLogin">
+        {{ isLogin ? '新規登録' : 'ログイン' }}はこちら
+      </a>
+    </p>
 
-      <p v-if="message" :class="{ 'error': isError, 'success': !isError }" class="auth-message">
-        {{ message }}
-      </p>
-    </div>
+    <p v-if="message" :class="{ 'error': isError, 'success': !isError }" class="auth-message">
+      {{ message }}
+    </p>
+
   </div>
 </template>
 

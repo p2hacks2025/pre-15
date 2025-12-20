@@ -1,7 +1,7 @@
 # P2HACKS2025 アピールシート
 
 ## プロダクト名
-てかマジ　～てか聞いて 今日のタコパ マジ楽しい～
+### てかマジ　～てか聞いて 今日のタコパ マジ楽しい～
 <img width="2245" height="1587" alt="背景透過ロゴ" src="https://github.com/user-attachments/assets/c715f5d6-3cec-4e91-9d6b-cb48186ba53c" />
 
 ## コンセプト

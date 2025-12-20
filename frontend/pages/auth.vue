@@ -2,7 +2,6 @@
   <div class="auth-container">
     <h1>{{ isLogin ? 'ログイン' : '新規登録' }}</h1>
 
-    <div class="form-wrapper">
       <form @submit.prevent="authenticate">
         <div class="form-group">
           <label for="email">メールアドレス</label>
@@ -33,7 +32,7 @@
       <p v-if="message" :class="{ 'error': isError, 'success': !isError }" class="auth-message">
         {{ message }}
       </p>
-    </div>
+    
   </div>
 </template>
 

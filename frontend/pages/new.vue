@@ -191,15 +191,15 @@ const submitPost = async () => {
   errorMessage.value = '';
 
   try {
+    const { $firestore } = useNuxtApp(); // 関数内で $firestore を取得
     const postsCollection = collection($firestore, 'posts');
-
     await addDoc(postsCollection, {
-      title: title.value,
       body: body.value,
-      // ログインユーザーのUIDを保存
       userId: uid.value,
       createdAt: serverTimestamp(),
+      background: text_backgrounds[bgIndex.value] 
     });
+    router.push('/timeline');
 
     successMessage.value = '投稿が完了しました！';
     title.value = '';

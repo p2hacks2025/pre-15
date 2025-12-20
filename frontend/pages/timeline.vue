@@ -194,7 +194,7 @@ const isUserAuthReady = () => getAuth().isAuthReady.value;
 <style scoped>
 .page-container {
   /* 背景画像の設定 */
-  background-image: url('/images/background-2.png');
+  background-image: url('/images/background-1.png');
   /* 画像のパス */
   background-size: cover;
   /* 画面全体を覆う */

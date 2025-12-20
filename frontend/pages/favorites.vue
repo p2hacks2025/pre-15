@@ -1,11 +1,9 @@
 <template>
   <div class="page-container">
     <header class="main-header">
-      <div class="header-top">
-        <NuxtLink to="/setting" class="hanbargarbar">
-          <img src="/images/hanbargarbar-icon.png" alt="メニュー" />
-        </NuxtLink>
-      </div>
+      <NuxtLink to="/setting" class="hanbargarbar">
+        <img src="/images/hanbargarbar-icon.png" alt="メニュー" />
+      </NuxtLink>
       <nav class="tab-menu">
         <NuxtLink to="/timeline" class="tab-item" active-class="active">
           ホーム
@@ -68,11 +66,9 @@ const { $firestore } = useNuxtApp();
 const favoritePosts = ref([]);
 const pending = ref(true);
 const error = ref(null);
+
 const loadImg = '/images/load.webp';
 
-const isUserLoggedIn = () => isLoggedIn.value;
-
-// 2. 欠落していた getPostStyle 関数を追加
 const getPostStyle = (post) => {
   if (!post || !post.background) {
     return { backgroundColor: '#FFF8E6' };
@@ -199,7 +195,7 @@ watch([isAuthReady, uid], () => {
   left: 60px;
 }
 
-/*新規作成ぼたん*/
+/* 新規作成 */
 .floating-button {
   position: fixed;
   bottom: 40px;
@@ -208,7 +204,6 @@ watch([isAuthReady, uid], () => {
   transition: transform 0.2s;
 }
 
-/* 投稿ボタン */
 .floating-button img {
   width: 80px;
   height: 80px;
@@ -242,7 +237,7 @@ watch([isAuthReady, uid], () => {
   padding: 50px;
 }
 
-/* 投稿カードとボタンを横に並べるためのラッパー */
+/* 投稿とボタンを横に並べる */
 .post-wrapper {
   display: flex;
   align-items: flex-end;
@@ -250,7 +245,7 @@ watch([isAuthReady, uid], () => {
   width: 100%;
 }
 
-/* --- 投稿カードのデザイン --- */
+/* 投稿のデザイン */
 .post-item {
   border: 0.3px solid #2f1000;
   flex: 1;
@@ -263,7 +258,7 @@ watch([isAuthReady, uid], () => {
   transition: transform 0.2s;
 }
 
-/* --- いいねボタン --- */
+/* お気に入り */
 .favorite-btn-img {
   background: none;
   border: none;
@@ -275,14 +270,6 @@ watch([isAuthReady, uid], () => {
   width: 32px;
   height: 32px;
   object-fit: contain;
-}
-
-/* --- 投稿ボタン --- */
-.floating-button {
-  position: fixed;
-  bottom: 30px;
-  right: 30px;
-  z-index: 100;
 }
 
 .nav-icon-img {

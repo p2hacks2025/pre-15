@@ -19,23 +19,23 @@ const goExplain = () => {
   router.push('/explain');
 };
 
-// 画面が表示された時の処理
 onMounted(() => {
   setTimeout(() => {
     showLogo.value = true;
   }, 1000);
 
   setTimeout(() => {
-     showLogo.value = false; 
+    showLogo.value = false;
   }, 3100);
 });
 </script>
 
 <style scoped>
-/* --- アニメーションの設定 --- */
+/* アニメーション */
 .fade-fast-enter-active {
-  transition: opacity 0.8s ease-out; 
+  transition: opacity 0.8s ease-out;
 }
+
 .fade-fast-leave-active {
   transition: opacity 1.2s ease-in;
 }
@@ -58,8 +58,7 @@ onMounted(() => {
 }
 
 .logo-wrapper {
-  /* ロゴが消えても高さがズレないように固定するのがコツ */
-  min-height: 300px; 
+  min-height: 300px;
   display: flex;
   align-items: center;
   justify-content: center;

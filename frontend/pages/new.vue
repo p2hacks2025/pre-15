@@ -24,7 +24,7 @@
           </div>
         </div>
 
-        <!-- 共有ボタン（現状は機能なし） -->
+        <!-- 共有ボタン -->
         <button type="button" class="share-btn" aria-label="共有" @click="onShareClick">
           <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000">
             <path
@@ -32,7 +32,7 @@
           </svg>
         </button>
 
-        <!-- 背景選択（スワイプで切替） -->
+        <!-- 背景選択 -->
         <div class="bg-controls" aria-hidden="false">
           <div class="bg-swipe-area" role="group" aria-label="背景をスワイプで切替" @pointerdown="onPointerDown"
             @pointerup="onPointerUp" @touchstart.prevent="onTouchStart" @touchend.prevent="onTouchEnd">
@@ -93,6 +93,7 @@ const isSubmitting = ref(false);
 const successMessage = ref('');
 const errorMessage = ref('');
 
+// 背景切替用の配列
 const lines = ref(['', '', '', '', '']);
 const maxChars = [9, 11, 9, 11, 11];
 const placeholders = ['五', '七', '五', '七', '七'];
@@ -167,10 +168,8 @@ const handleSwipe = (dx) => {
   const threshold = 40; // px
   if (Math.abs(dx) < threshold) return;
   if (dx < 0) {
-    // swipe left -> next
     bgIndex.value = (bgIndex.value + 1) % text_backgrounds.length;
   } else {
-    // swipe right -> prev
     bgIndex.value = (bgIndex.value - 1 + text_backgrounds.length) % text_backgrounds.length;
   }
 };
@@ -185,13 +184,12 @@ const nextBg = () => {
 
 const onShareClick = async () => {
   console.log('共有ボタンが押されました');
-  /* 現在選択されている背景の色や情報を取得 */
   const currentBg = text_backgrounds[bgIndex.value];
   const bgDescription = currentBg.type === 'color' ? `背景色：${currentBg.color}` : '画像背景';
   const content = body.value || "（本文なし）";
   const shareText = `${content}%0A%0Aみんなも「てかマジ」で日々のキラキラを共有しよう！%0A#p2hacks  #てかマジ%0A`;
   const shareUrl = 'https://google.com';
-  /*X専用リンク*/
+  /* X専用リンク */
   const xUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText.replace(/%0A/g, '\n'))}&url=${encodeURIComponent(shareUrl)}`;
 
   try {
@@ -250,7 +248,13 @@ const submitPost = async () => {
       createdAt: serverTimestamp(),
       background: text_backgrounds[bgIndex.value]
     });
+    successMessage.value = '投稿が完了しました！';
+    title.value = '';
+    body.value = '';
+
+    // 投稿一覧へリダイレクト
     router.push('/timeline');
+
   } catch (error) {
     console.error("投稿エラー:", error);
     errorMessage.value = '投稿エラー: ' + error.message;
@@ -261,7 +265,6 @@ const submitPost = async () => {
 </script>
 
 <style scoped>
-/* 投稿フォームのコンテナ */
 .new-post-container {
   position: relative;
   max-width: 420px;
@@ -292,7 +295,6 @@ const submitPost = async () => {
   display: block;
   margin: 0 auto;
   width: min(80vw, 320px);
-  /* 画面幅に応じて最大320px */
   aspect-ratio: 1 / 1;
   max-height: 60vh;
   background-color: #FBF8EF;
@@ -307,7 +309,6 @@ const submitPost = async () => {
   font-family: inherit;
   z-index: 10;
   overflow: auto;
-  /* 内部でスクロール可能 */
   min-height: 120px;
 }
 
@@ -358,7 +359,6 @@ const submitPost = async () => {
   gap: 12px;
 }
 
-/* 背景スライダーとプレビュー */
 .bg-controls {
   width: min(80vw, 320px);
   max-width: 100%;
@@ -420,7 +420,6 @@ const submitPost = async () => {
   background-position: center;
 }
 
-/* サムネイル群 */
 .bg-thumbs {
   display: flex;
   gap: 12px;
@@ -577,7 +576,6 @@ const submitPost = async () => {
   margin-top: 15px;
 }
 
-/* 警告ボックスのスタイル */
 .warning-box {
   padding: 10px;
   background-color: #ffe0b2;

@@ -14,7 +14,10 @@
       <NuxtLink to="/favorites">>> 自分がいいねした投稿を見る</NuxtLink>
     </p>
 
-    <p v-if="pending || !favoritesReady">データを読み込み中です...</p>
+    <div v-if="pending || !favoritesReady" class="loading">
+      <img src="/images/load.webp" alt="読み込み中" class="loading-image" />
+      <p>データを読み込み中です...</p>
+    </div>
     <p v-else-if="error">投稿データの読み込み中にエラーが発生しました: {{ error?.message || String(error) }}</p>
 
     <div v-else-if="posts && posts.length > 0" class="post-list">
@@ -235,6 +238,22 @@ const isUserAuthReady = () => getAuth().isAuthReady.value;
 /* マウスを乗せた時（タップしたとき）に少し大きくする演出 */
 .floating-button:hover {
   transform: scale(1.1);
+}
+
+/* 読み込み中の表示 */
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+.loading-image {
+  width: 160px;
+  height: auto;
+  object-fit: contain;
+  margin-bottom: 16px;
 }
 
 /* 全体 */

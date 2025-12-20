@@ -32,6 +32,11 @@
         <div class="post-item" :style="getPostStyle(post)">
           <p class="post-body">{{ post.body }}</p>
         </div>
+        <div class="side-action">
+          <button @click="deletePost(post.id)" :disabled="!isUserLoggedIn()" class="trash-btn-img">
+            <img :src="'/images/trashcan.png'" alt="削除" class="trash-icon-size" />
+          </button>
+        </div>
       </div>
     </div>
 
@@ -71,6 +76,25 @@ const backArrow = '/images/back-arrow.png';
 
 const goSetting = () => {
   router.push('/setting');
+};
+
+const deletePost = async (postId) => {
+  // 1. まず「本当に消すか」を確認
+  const ok = confirm("この投稿を完全に削除してもよろしいですか？");
+  if (!ok) return; // キャンセルされたら何もしない
+  try {
+    const { $firestore } = useNuxtApp();
+    // 2. Firestoreから削除実行
+    await deleteDoc(doc($firestore, 'posts', postId));
+
+    // 3. 画面上のリストからも消す（再読み込みなしで反映）
+    posts.value = posts.value.filter(p => p.id !== postId);
+    
+    alert("投稿を削除しました。");
+  } catch (e) {
+    console.error("削除エラー:", e);
+    alert("削除中にエラーが発生しました。");
+  }
 };
 
 // --- ホームと共通のスタイル取得関数 ---
@@ -241,6 +265,12 @@ watch([() => getAuth().isAuthReady.value, () => getAuth().uid.value], () => {
   background: none;
   border: none;
   padding: 0;
+  cursor: pointer;
+}
+
+.trash-btn-img{
+  background: none;
+  border: none;
   cursor: pointer;
 }
 

@@ -14,8 +14,15 @@
 
       <!-- テキスト入力エリア -->
       <div class="body-wrapper">
-        <textarea id="body" class="sticky-note" v-model="body" required :disabled="!isLoggedIn || isSubmitting"
-          :style="currentBgStyle"></textarea>
+        <div class="sticky-note" :style="currentBgStyle">
+          <div class="tanka-inputs">
+            <div v-for="(line, index) in lines" :key="index" class="input-line">
+              <input v-model="lines[index]" :placeholder="placeholders[index]" :maxlength="maxChars[index]"
+                :disabled="!isLoggedIn || isSubmitting" type="text" class="tanka-field" />
+              <span class="char-counter">{{ lines[index].length }}/{{ maxChars[index] }}</span>
+            </div>
+          </div>
+        </div>
 
         <!-- 共有ボタン -->
         <button type="button" class="share-btn" aria-label="共有" @click="onShareClick">
@@ -87,6 +94,11 @@ const successMessage = ref('');
 const errorMessage = ref('');
 
 // 背景切替用の配列
+const lines = ref(['', '', '', '', '']);
+const maxChars = [9, 11, 9, 11, 11];
+const placeholders = ['五', '七', '五', '七', '七'];
+
+// 背景切替用の配列（色または将来の画像URLを格納します）
 const text_backgrounds = [
   { id: 0, type: 'color', color: '#FFF8E6' },
   { id: 1, type: 'color', color: '#FBF8EF' },
@@ -196,6 +208,29 @@ const submitPost = async () => {
     return;
   }
 
+  // 未入力の場合投稿不可
+  if (lines.value.every(l => l.trim() === '')) {
+    errorMessage.value = '内容を入力してください。';
+    return;
+  }
+
+  const filledLines = lines.value.map(l => l.trim()).filter(l => l !== '');
+  const lineCount = filledLines.length;
+
+  // 3行（575）でもなく、5行（57577）でもない場合はエラー
+  if (lineCount !== 3 && lineCount !== 5) {
+    errorMessage.value = '「五・七・五」または「五・七・五・七・七」の形式で入力してください。';
+    return;
+  }
+
+  // 最初の行から数えて lineCount 分がすべて埋まっているか確認
+  for (let i = 0; i < lineCount; i++) {
+    if (lines.value[i].trim() === '') {
+      errorMessage.value = '上から順番に行を埋めてください。';
+      return;
+    }
+  }
+
   if (isSubmitting.value) return;
 
   isSubmitting.value = true;
@@ -203,16 +238,16 @@ const submitPost = async () => {
   errorMessage.value = '';
 
   try {
+    // 改行をした1つの文にする
+    const combinedBody = filledLines.join('\n');
     const { $firestore } = useNuxtApp();
     const postsCollection = collection($firestore, 'posts');
     await addDoc(postsCollection, {
-      body: body.value,
+      body: combinedBody, // 結合したテキストを保存
       userId: uid.value,
       createdAt: serverTimestamp(),
       background: text_backgrounds[bgIndex.value]
     });
-    router.push('/timeline');
-
     successMessage.value = '投稿が完了しました！';
     title.value = '';
     body.value = '';
@@ -280,6 +315,39 @@ const submitPost = async () => {
 .sticky-note:focus {
   outline: none;
   box-shadow: none;
+}
+
+.tanka-inputs {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  height: 100%;
+  width: 100%;
+}
+
+.input-line {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px dotted rgba(0, 0, 0, 0.1);
+  /* ガイド線 */
+  padding: 4px 0;
+}
+
+.tanka-field {
+  flex: 1;
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  font-family: inherit;
+  outline: none;
+  color: #2f1000;
+}
+
+.char-counter {
+  font-size: 10px;
+  color: #999;
+  margin-left: 8px;
+  min-width: 25px;
 }
 
 .body-wrapper {

@@ -15,7 +15,7 @@
       </p>
     </div>
 
-    <div v-if="pending" class="loading">
+    <div v-if="isUserLoggedIn() && pending" class="loading">
       <img :src="loadImg" alt="読み込み中" class="loading-image" />
       <p>データを読み込み中です...</p>
     </div>
@@ -54,6 +54,9 @@ const favoritePosts = ref([]);
 const pending = ref(true);
 const error = ref(null);
 const loadImg = 'images/load.webp';
+
+const getAuth = () => useAuthUser();
+const isUserLoggedIn = () => getAuth().isLoggedIn.value;
 
 const fetchFavoritePosts = async () => {
   if (!isLoggedIn.value || !uid.value) {

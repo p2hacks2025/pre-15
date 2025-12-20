@@ -1,51 +1,51 @@
 <template>
-  <div class="page-container">
-    <header class="main-header">
-      <div class="header-top">
+  <div class="hero-container">
+    <div class="page-container">
+      <header class="main-header">
         <NuxtLink to="/setting" class="hanbargarbar">
           <img src="/images/hanbargarbar-icon.png" alt="メニュー" />
         </NuxtLink>
+        <nav class="tab-menu">
+          <NuxtLink to="/timeline" class="tab-item" active-class="active">
+            ホーム
+          </NuxtLink>
+          <NuxtLink to="/favorites" class="tab-item" active-class="active">
+            お気に入り
+          </NuxtLink>
+        </nav>
+      </header>
+
+      <div v-if="!isAuthReady" class="loading">
+        <p>認証情報を読み込み中です...</p>
       </div>
-      <nav class="tab-menu">
-        <NuxtLink to="/timeline" class="tab-item" active-class="active">
-          ホーム
-        </NuxtLink>
-        <NuxtLink to="/favorites" class="tab-item" active-class="active">
-          お気に入り
-        </NuxtLink>
-      </nav>
-    </header>
 
-    <div v-if="!isAuthReady" class="loading">
-      <p>認証情報を読み込み中です...</p>
-    </div>
+      <div v-else-if="!isLoggedIn" class="loading">
+        <p>いいね一覧を見るにはログインが必要です。</p>
+        <NuxtLink to="/auth">ログイン / 新規登録</NuxtLink>
+      </div>
 
-    <div v-else-if="!isLoggedIn" class="loading">
-      <p>いいね一覧を見るにはログインが必要です。</p>
-      <NuxtLink to="/auth">ログイン / 新規登録</NuxtLink>
-    </div>
+      <div v-else-if="pending" class="loading">
+        <img :src="loadImg" alt="読み込み中" class="loading-image" />
+        <p>データを読み込み中です...</p>
+      </div>
 
-    <div v-else-if="pending" class="loading">
-      <img :src="loadImg" alt="読み込み中" class="loading-image" />
-      <p>データを読み込み中です...</p>
-    </div>
+      <p v-else-if="error">エラーが発生しました: {{ error.message }}</p>
 
-    <p v-else-if="error">エラーが発生しました: {{ error.message }}</p>
-
-    <div v-else-if="favoritePosts.length > 0" class="post-list">
-      <div v-for="post in favoritePosts" :key="post.id" class="post-wrapper">
-        <div class="post-item" :style="getPostStyle(post)">
-          <p class="post-body">{{ post.body }}</p>
-        </div>
-        <div class="side-action">
-          <button class="favorite-btn-img">
-            <img src="/images/favorite.png" alt="いいね" class="fav-icon-size" />
-          </button>
+      <div v-else-if="favoritePosts.length > 0" class="post-list">
+        <div v-for="post in favoritePosts" :key="post.id" class="post-wrapper">
+          <div class="post-item" :style="getPostStyle(post)">
+            <p class="post-body">{{ post.body }}</p>
+          </div>
+          <div class="side-action">
+            <button class="favorite-btn-img">
+              <img src="/images/favorite.png" alt="いいね" class="fav-icon-size" />
+            </button>
+          </div>
         </div>
       </div>
-    </div>
 
-    <p v-else class="loading">まだお気に入りにした投稿はありません。</p>
+      <p v-else class="loading">まだお気に入りにした投稿はありません。</p>
+    </div>
   </div>
 </template>
 
@@ -68,11 +68,9 @@ const { $firestore } = useNuxtApp();
 const favoritePosts = ref([]);
 const pending = ref(true);
 const error = ref(null);
+
 const loadImg = '/images/load.webp';
 
-const isUserLoggedIn = () => isLoggedIn.value;
-
-// 2. 欠落していた getPostStyle 関数を追加
 const getPostStyle = (post) => {
   if (!post || !post.background) {
     return { backgroundColor: '#FFF8E6' };
@@ -199,7 +197,7 @@ watch([isAuthReady, uid], () => {
   left: 60px;
 }
 
-/*新規作成ぼたん*/
+/* 新規作成 */
 .floating-button {
   position: fixed;
   bottom: 40px;
@@ -208,7 +206,6 @@ watch([isAuthReady, uid], () => {
   transition: transform 0.2s;
 }
 
-/* 投稿ボタン */
 .floating-button img {
   width: 80px;
   height: 80px;
@@ -242,7 +239,7 @@ watch([isAuthReady, uid], () => {
   padding: 50px;
 }
 
-/* 投稿カードとボタンを横に並べるためのラッパー */
+/* 投稿とボタンを横に並べる */
 .post-wrapper {
   display: flex;
   align-items: flex-end;
@@ -250,7 +247,7 @@ watch([isAuthReady, uid], () => {
   width: 100%;
 }
 
-/* --- 投稿カードのデザイン --- */
+/* 投稿のデザイン */
 .post-item {
   border: 0.3px solid #2f1000;
   flex: 1;
@@ -263,7 +260,7 @@ watch([isAuthReady, uid], () => {
   transition: transform 0.2s;
 }
 
-/* --- いいねボタン --- */
+/* お気に入り */
 .favorite-btn-img {
   background: none;
   border: none;
@@ -275,14 +272,6 @@ watch([isAuthReady, uid], () => {
   width: 32px;
   height: 32px;
   object-fit: contain;
-}
-
-/* --- 投稿ボタン --- */
-.floating-button {
-  position: fixed;
-  bottom: 30px;
-  right: 30px;
-  z-index: 100;
 }
 
 .nav-icon-img {

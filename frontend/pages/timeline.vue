@@ -1,43 +1,43 @@
 <template>
-  <div class="page-container">
-    <header class="main-header">
-      <div class="header-top">
+  <div class="hero-container">
+    <div class="page-container">
+      <header class="main-header">
         <NuxtLink to="/setting" class="hanbargarbar">
           <img src="/images/hanbargarbar-icon.png" alt="メニュー" />
         </NuxtLink>
+        <nav class="tab-menu">
+          <NuxtLink to="/timeline" class="tab-item" active-class="active">
+            ホーム
+          </NuxtLink>
+          <NuxtLink to="/favorites" class="tab-item" active-class="active">
+            お気に入り
+          </NuxtLink>
+        </nav>
+      </header>
+
+      <NuxtLink to="/new" class="floating-button">
+        <img src="/images/newpost-icon2.png" alt="新規投稿" class="nav-icon-img" />
+      </NuxtLink>
+
+      <div v-if="pending || !favoritesReady" class="loading">
+        <img :src="loadImg" alt="読み込み中" class="loading-image" />
+        <p>データを読み込み中です...</p>
       </div>
-      <nav class="tab-menu">
-        <NuxtLink to="/timeline" class="tab-item" active-class="active">
-          ホーム
-        </NuxtLink>
-        <NuxtLink to="/favorites" class="tab-item" active-class="active">
-          お気に入り
-        </NuxtLink>
-      </nav>
-    </header>
+      <p v-else-if="error">投稿データの読み込み中にエラーが発生しました: {{ error?.message || String(error) }}</p>
 
-    <NuxtLink to="/new" class="floating-button">
-      <img src="/images/newpost-icon2.png" alt="新規投稿" class="nav-icon-img" />
-    </NuxtLink>
+      <div v-else-if="posts && posts.length > 0" class="post-list">
+        <div v-for="post in posts" :key="post.id" class="post-wrapper">
+          <div class="post-item" :style="getPostStyle(post)">
+            <p class="post-body">{{ post.body }}</p>
+          </div>
+          <div class="side-action">
+            <button @click="toggleFavorite(post.id)" :disabled="!isUserLoggedIn()" class="favorite-btn-img">
+              <img :src="favorites[post.id] ? '/images/favorite.png' : '/images/nonFavorite.png'" alt="いいね"
+                class="fav-icon-size" />
+            </button>
+          </div>
 
-    <div v-if="pending || !favoritesReady" class="loading">
-      <img :src="loadImg" alt="読み込み中" class="loading-image" />
-      <p>データを読み込み中です...</p>
-    </div>
-    <p v-else-if="error">投稿データの読み込み中にエラーが発生しました: {{ error?.message || String(error) }}</p>
-
-    <div v-else-if="posts && posts.length > 0" class="post-list">
-      <div v-for="post in posts" :key="post.id" class="post-wrapper">
-        <div class="post-item" :style="getPostStyle(post)">
-          <p class="post-body">{{ post.body }}</p>
         </div>
-        <div class="side-action">
-          <button @click="toggleFavorite(post.id)" :disabled="!isUserLoggedIn()" class="favorite-btn-img">
-            <img :src="favorites[post.id] ? '/images/favorite.png' : '/images/nonFavorite.png'" alt="いいね"
-              class="fav-icon-size" />
-          </button>
-        </div>
-
       </div>
     </div>
   </div>
@@ -73,7 +73,7 @@ const favoritesReady = ref(false);
 
 const loadImg = 'images/load.webp';
 
-// 1. 投稿データの取得 (onMountedでクライアント側で実行) 
+// 投稿データの取得 (onMountedでクライアント側で実行) 
 const fetchAllPosts = async () => {
   pending.value = true;
   error.value = null;
@@ -93,7 +93,7 @@ const fetchAllPosts = async () => {
   }
 };
 
-// 2. いいね情報の取得
+// お気に入りの取得
 const fetchFavorites = async () => {
   const { uid, isLoggedIn } = getAuth();
   if (!isLoggedIn.value || !uid.value) {
@@ -121,7 +121,7 @@ const fetchFavorites = async () => {
 }
 
 const getPostStyle = (post) => {
-  // backgroundデータがない場合（古い投稿など）はデフォルト色を返す
+  // backgroundデータがない場合はデフォルト色を返す
   if (!post || !post.background) {
     return { backgroundColor: '#FFF8E6' };
   }
@@ -141,7 +141,7 @@ const getPostStyle = (post) => {
   return { backgroundColor: b.color };
 };
 
-// クライアントサイドでの実行を保証
+// クライアントサイドの実行保証
 onMounted(() => {
   fetchAllPosts(); // 投稿一覧はログイン状態に関わらずロード
 });
@@ -156,7 +156,7 @@ watch([() => getAuth().isAuthReady.value, () => getAuth().uid.value], () => {
 }, { immediate: true });
 
 
-// 3. いいねのトグル処理 
+// お気に入り 
 const toggleFavorite = async (postId) => {
   const { uid, isLoggedIn } = getAuth();
   if (!isLoggedIn.value) {
@@ -200,6 +200,16 @@ const isUserAuthReady = () => getAuth().isAuthReady.value;
 </script>
 
 <style scoped>
+.hero-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-size: auto 100vh;
+  background-position: center top;
+  background-repeat: no-repeat;
+}
+
 .page-container {
   background-image: url('/images/background-1.png');
   background-size: cover;
@@ -259,7 +269,7 @@ const isUserAuthReady = () => getAuth().isAuthReady.value;
   left: 60px;
 }
 
-/*新規作成ぼたん*/
+/* 新規作成 */
 .floating-button {
   position: fixed;
   bottom: 40px;
@@ -302,7 +312,7 @@ const isUserAuthReady = () => getAuth().isAuthReady.value;
   padding: 50px;
 }
 
-/* 投稿カードとボタンを横に並べるためのラッパー */
+/* 投稿とボタンを横に並べる */
 .post-wrapper {
   display: flex;
   align-items: flex-end;
@@ -310,7 +320,7 @@ const isUserAuthReady = () => getAuth().isAuthReady.value;
   width: 100%;
 }
 
-/* --- 投稿カードのデザイン --- */
+/* 投稿 */
 .post-item {
   border: 0.3px solid #2f1000;
   flex: 1;
@@ -323,7 +333,7 @@ const isUserAuthReady = () => getAuth().isAuthReady.value;
   transition: transform 0.2s;
 }
 
-/* --- いいねボタン --- */
+/* いいねボタン */
 .favorite-btn-img {
   background: none;
   border: none;
@@ -337,7 +347,7 @@ const isUserAuthReady = () => getAuth().isAuthReady.value;
   object-fit: contain;
 }
 
-/* --- 投稿ボタン --- */
+/* 投稿ボタン */
 .floating-button {
   position: fixed;
   bottom: 30px;

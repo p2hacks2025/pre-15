@@ -54,7 +54,6 @@ onMounted(() => {
   background-position: center top;
   background-repeat: no-repeat;
   cursor: pointer;
-  background-color: #fff;
 }
 
 .explain-box {

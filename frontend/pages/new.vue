@@ -95,7 +95,7 @@ const errorMessage = ref('');
 // 背景切替用の配列
 const lines = ref(['', '', '', '', '']);
 const maxChars = [9, 11, 9, 11, 11];
-const placeholders = ['◯◯◯◯◯', '◯◯◯◯◯◯◯', '◯◯◯◯◯', '◯◯◯◯◯◯', '◯◯◯◯◯◯'];
+const placeholders = ['◯◯◯◯◯', '◯◯◯◯◯◯◯', '◯◯◯◯◯', '◯◯◯◯◯◯◯', '◯◯◯◯◯◯◯'];
 
 // 背景切替用の配列（色または将来の画像URLを格納します）
 const text_backgrounds = [
@@ -540,17 +540,24 @@ const submitPost = async () => {
 }
 
 .submit-btn {
-  width: fit-content;
-  padding: 10px 22px;
-  background: #FBF8EF;
-  color: #000000;
-  border: 10px solid #B4EBE6;
+  width: 100%;
+  padding: 12px;
+  background-color: #80CBC4;
+  color: white;
+  border: none;
   border-radius: 6px;
+  font-size: 1rem;
+  font-weight: bold;
   cursor: pointer;
+  transition: background-color 0.3s, opacity 0.3s;
 }
 
-.submit-btn:disabled {
-  background: #aaa;
+button:hover {
+  background-color: #B4EBE6;
+}
+
+button:disabled {
+  background-color: #ccc;
   cursor: not-allowed;
 }
 
@@ -656,10 +663,6 @@ const submitPost = async () => {
 
   .bg-thumb {
     opacity: 0.95;
-  }
-
-  .submit-wrapper {
-    bottom: calc(8px + env(safe-area-inset-bottom, 0px));
   }
 }
 </style>

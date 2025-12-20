@@ -1,5 +1,6 @@
 <template>
   <div class="hero-container">
+    <div class="fixed-background"></div>
     <div class="page-container">
       <header class="main-header">
         <NuxtLink to="/setting" class="hanbargarbar">
@@ -138,17 +139,32 @@ watch([isAuthReady, uid], () => {
 </script>
 
 <style scoped>
-.page-container {
+.fixed-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
   background-image: url('/images/background-1.png');
   background-size: cover;
   background-position: center;
-  background-attachment: fixed;
   background-repeat: no-repeat;
+  pointer-events: none;
+}
+
+.hero-container {
+  width: 100%;
+  min-height: 100vh;
+}
+
+.page-container {
   width: 100vw;
   min-height: 100vh;
   margin: 0;
   padding: 0;
   overflow-x: hidden;
+  background-color: transparent;
 }
 
 .tab-menu {

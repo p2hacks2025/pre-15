@@ -25,6 +25,9 @@
             <button class="btn" :disabled="!isLoggedIn()" @click.prevent="goMypost">
                 自分の投稿を管理する
             </button>
+            <button class="btn" @click.prevent="goTitle">
+                タイトル画面へ
+            </button>
         </div>
 
     </div>
@@ -49,6 +52,10 @@ const goBack = () => {
 
 const goMypost = () => {
     router.push('/mypost');
+};
+
+const goTitle = () => {
+    router.push('/');
 };
 
 // ログイン状態の判定

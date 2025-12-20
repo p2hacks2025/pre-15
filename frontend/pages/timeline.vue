@@ -13,7 +13,11 @@
       <img src="/images/newpost-icon.png" alt="新規投稿" class="nav-icon-img" />
     </NuxtLink>
 
-    <div v-if="pending || !favoritesReady">データを読み込み中です...</div>
+    <div v-if="pending || !favoritesReady" class="loading">
+      <img :src="loadImg" alt="読み込み中" class="loading-image" />
+      <p>データを読み込み中です...</p>
+    </div>
+    <p v-else-if="error">投稿データの読み込み中にエラーが発生しました: {{ error?.message || String(error) }}</p>
 
     <div v-else-if="posts && posts.length > 0" class="post-list">
       <div v-for="post in posts" :key="post.id" class="post-wrapper">
@@ -63,6 +67,7 @@ const error = ref(null);
 const favorites = ref({});
 const favoritesReady = ref(false);
 
+const loadImg = 'images/load.webp';
 
 // 1. 投稿データの取得 (onMountedでクライアント側で実行) 
 const fetchAllPosts = async () => {
@@ -256,7 +261,23 @@ const isUserAuthReady = () => getAuth().isAuthReady.value;
   transform: scale(1.1);
 }
 
-/* --- 全体レイアウト --- */
+/* 読み込み中の表示 */
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+.loading-image {
+  width: 120px;
+  height: auto;
+  object-fit: contain;
+  margin-bottom: 12px;
+}
+
+/* 全体 */
 .post-list {
   display: flex;
   flex-direction: column;

@@ -12,6 +12,10 @@
         <div class="form-group">
           <label for="password">パスワード</label>
           <input type="password" id="password" v-model="password" required>
+
+          <p v-if="!isLogin" class="password-hint">
+            ※6文字以上で入力してください
+          </p>
         </div>
 
         <button type="submit" :disabled="isLoading">
@@ -186,6 +190,14 @@ button:disabled {
   font-size: 0.9rem;
   color: #666;
 }
+/*パスワード6文字以上の書式設定*/
+.password-hint{
+  margin-top: 5px;
+  font-size: 1rem;
+  font-weight: 800;
+  color: #FF5729;
+  text-align: center;
+}
 
 .toggle-mode a {
   color: #80CBC4;
@@ -213,8 +225,17 @@ button:disabled {
 }
 
 .auth-message.success {
-  background-color: #e8f5e9;
+  background-color: #FBF8EF;
   color: #2e7d32;
   border: 1px solid #c8e6c9;
+}
+/* ブラウザの自動入力（オートコンプリート）時の色を上書きする */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus {
+  /* 文字色を茶色に固定 */
+  -webkit-text-fill-color: #2F1000;
+  /* 背景色をベージュ（#FBF8EF）で塗りつぶす設定 */
+  transition: background-color 5000s ease-in-out 0s;
 }
 </style>

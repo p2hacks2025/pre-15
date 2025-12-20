@@ -253,10 +253,11 @@ const submitPost = async () => {
   max-height: 60vh;
   background-color: #FBF8EF;
   border: 1px solid #FFB433;
-  padding: 14px;
+  align-content: center;
+  padding: 30px;
   border-radius: 6px;
   resize: none;
-  font-size: 16px;
+  font-size: 25px;
   line-height: 1.4;
   box-sizing: border-box;
   font-family: inherit;

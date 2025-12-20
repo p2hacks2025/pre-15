@@ -2,7 +2,11 @@
     <div class="page-container">
         <header class="main-header">
             <a href="#" class="hanbargarbar" @click.prevent="goBack">
-                <img src="/images/hanbargarbar-icon.png" alt="メニュー閉じる" />
+                <svg xmlns="http://www.w3.org/2000/svg" height="45px" viewBox="0 -960 960 960" width="45px"
+                    fill="#000000">
+                    <path
+                        d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" />
+                </svg>
             </a>
         </header>
 

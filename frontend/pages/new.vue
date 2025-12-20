@@ -186,9 +186,9 @@ const onShareClick = async () => {
   const currentBg = text_backgrounds[bgIndex.value];
   const bgDescription = currentBg.type === 'color' ? `背景色：${currentBg.color}` : '画像背景';
   const content = body.value || "（本文なし）";
-  const shareText = `${content}%0A%0Aみんなも「てかマジ」で日々のキラキラを共有しよう！%0A#p2hacks  #てかマジ%0A`;
-  const shareUrl = 'https://google.com';
-  /* X専用リンク */
+  const shareText = `${content}%0A%0Aみんなも「てかマジ」で日々のキラキラを共有しよう！%0A#p2hacks  #てかマジ  #魚眼れんズ%0A`;
+  const shareUrl = 'https://gyoganlens-2ce04.web.app/';
+  /*X専用リンク*/
   const xUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText.replace(/%0A/g, '\n'))}&url=${encodeURIComponent(shareUrl)}`;
 
   try {

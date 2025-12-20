@@ -95,7 +95,7 @@ const errorMessage = ref('');
 // 背景切替用の配列
 const lines = ref(['', '', '', '', '']);
 const maxChars = [9, 11, 9, 11, 11];
-const placeholders = ['◯◯◯◯◯', '◯◯◯◯◯◯◯', '◯◯◯◯◯', '◯◯◯◯◯◯', '◯◯◯◯◯◯'];
+const placeholders = ['◯◯◯◯◯', '◯◯◯◯◯◯◯', '◯◯◯◯◯', '◯◯◯◯◯◯◯', '◯◯◯◯◯◯◯'];
 
 // 背景切替用の配列（色または将来の画像URLを格納します）
 const text_backgrounds = [

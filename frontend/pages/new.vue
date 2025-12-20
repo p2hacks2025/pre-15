@@ -203,18 +203,34 @@ const onShareClick = async () => {
 };
 
 const submitPost = async () => {
-  if (lines.value.every(l => l.trim() === '')) {
-    errorMessage.value = '内容を入力してください。';
-    return;
-  }
-
-  const combinedBody = lines.value.filter(l => l.trim() !== '').join('\n');
-
   // 認証状態のチェック
   if (!isLoggedIn.value || !uid.value) {
     errorMessage.value = '投稿するにはログインが必要です。';
     router.push('/auth');
     return;
+  }
+
+  // 未入力の場合投稿不可
+  if (lines.value.every(l => l.trim() === '')) {
+    errorMessage.value = '内容を入力してください。';
+    return;
+  }
+
+  const filledLines = lines.value.map(l => l.trim()).filter(l => l !== '');
+  const lineCount = filledLines.length;
+
+  // 3行（575）でもなく、5行（57577）でもない場合はエラー
+  if (lineCount !== 3 && lineCount !== 5) {
+    errorMessage.value = '「五・七・五」または「五・七・五・七・七」の形式で入力してください。';
+    return;
+  }
+
+  // 最初の行から数えて lineCount 分がすべて埋まっているか確認
+  for (let i = 0; i < lineCount; i++) {
+    if (lines.value[i].trim() === '') {
+      errorMessage.value = '上から順番に行を埋めてください。';
+      return;
+    }
   }
 
   if (isSubmitting.value) return;
@@ -224,6 +240,8 @@ const submitPost = async () => {
   errorMessage.value = '';
 
   try {
+    // 改行をした1つの文にする
+    const combinedBody = filledLines.join('\n');
     const { $firestore } = useNuxtApp();
     const postsCollection = collection($firestore, 'posts');
     await addDoc(postsCollection, {

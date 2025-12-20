@@ -1,10 +1,12 @@
 <template>
   <div class="page-container">
     <header class="main-header">
-      <h1>自分の投稿一覧</h1>
-      <p>
-        <NuxtLink to="/timeline">← 投稿一覧に戻る</NuxtLink>
-      </p>
+      <div class="header-top">
+        <button class="back-button" @click="goSetting">
+          <img :src="backArrow" alt="戻る" class="back-icon-img" />
+        </button>
+        <h1 class="header-title">自分の投稿一覧</h1>
+      </div>
     </header>
 
     <div v-if="!isUserAuthReady()" class="loading">
@@ -61,7 +63,15 @@ const pending = ref(true);
 const error = ref(null);
 const favorites = ref({});
 const favoritesReady = ref(false);
+
+const router = useRouter();
+
 const loadImg = '/images/load.webp';
+const backArrow = '/images/back-arrow.png';
+
+const goSetting = () => {
+  router.push('/setting');
+};
 
 // --- ホームと共通のスタイル取得関数 ---
 const getPostStyle = (post) => {
@@ -118,23 +128,6 @@ const fetchFavorites = async () => {
   } finally {
     favoritesReady.value = true;
   }
-}
-
-// いいねトグル（ホームと共通）
-const toggleFavorite = async (postId) => {
-  const { uid } = getAuth();
-  const { $firestore } = useNuxtApp();
-  const favId = favorites.value[postId];
-  try {
-    if (favId) {
-      await deleteDoc(doc($firestore, 'favorites', favId));
-      delete favorites.value[postId];
-    } else {
-      const newRef = doc(collection($firestore, 'favorites'));
-      await setDoc(newRef, { userId: uid.value, postId, createdAt: serverTimestamp() });
-      favorites.value[postId] = newRef.id;
-    }
-  } catch (e) { console.error(e); }
 };
 
 onMounted(() => { if (isUserLoggedIn()) fetchMyPosts(); });
@@ -148,7 +141,6 @@ watch([() => getAuth().isAuthReady.value, () => getAuth().uid.value], () => {
 </script>
 
 <style scoped>
-/* --- 背景設定：ホームと統一 --- */
 .page-container {
   background-image: url('/images/background-1.png');
   background-size: cover;
@@ -160,6 +152,50 @@ watch([() => getAuth().isAuthReady.value, () => getAuth().uid.value], () => {
   margin: 0;
   padding: 0;
   overflow-x: hidden;
+}
+
+.main-header {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  padding: 10px 0;
+}
+
+.header-top {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 10px 20px;
+}
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+.back-icon-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.header-title {
+  font-size: 18px;
+  margin: 0;
+  padding: 6px 16px;
+  border: 1.5px solid #FFB433;
+  border-radius: 20px;
+  color: #2f1000;
+  background-color: transparent;
+  display: inline-block;
+  white-space: nowrap;
 }
 
 .mypost-container {

@@ -249,8 +249,6 @@ const isUserAuthReady = () => getAuth().isAuthReady.value;
   top: 0;
   width: 100%;
   z-index: 100;
-  background-color: rgba(255, 255, 255, 0.5);
-  backdrop-filter: blur(5px);
   padding-bottom: 10px;
 }
 

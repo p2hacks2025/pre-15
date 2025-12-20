@@ -8,10 +8,10 @@
       </div>
       <nav class="tab-menu">
         <NuxtLink to="/timeline" class="tab-item" active-class="active">
-          すべての投稿
+          ホーム
         </NuxtLink>
-        <NuxtLink v-if="isUserLoggedIn()" to="/favorites" class="tab-item" active-class="active">
-          いいねした投稿
+        <NuxtLink to="/favorites" class="tab-item" active-class="active">
+          お気に入り
         </NuxtLink>
       </nav>
     </header>
@@ -392,5 +392,19 @@ const isUserAuthReady = () => getAuth().isAuthReady.value;
 .post-body {
   white-space: pre-wrap;
   font-size: 16px;
+}
+
+.warning-box {
+  padding: 10px;
+  background-color: #ffe0b2;
+  color: #e65100;
+  border-radius: 4px;
+  margin-bottom: 15px;
+}
+
+.warning-box a {
+  color: #e65100;
+  font-weight: bold;
+  text-decoration: none;
 }
 </style>

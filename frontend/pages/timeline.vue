@@ -1,7 +1,7 @@
 <template>
   <div class="page-container">
     <header class="main-header">
-      <NuxtLink to="/" class="hanbargarbar">
+      <NuxtLink to="/setting" class="hanbargarbar">
         <img src="/images/hanbargarbar-icon.png" alt="はんばーがーば" />
       </NuxtLink>
       <NuxtLink to="/mypost">>> 自分の投稿を管理する</NuxtLink>

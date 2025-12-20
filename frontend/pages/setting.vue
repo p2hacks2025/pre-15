@@ -11,22 +11,22 @@
 
 <script setup>
 import { useAuthUser } from '../composables/useAuthUser';
-import { useAuthUser } from '../composables/useAuthUser';
 
+// 認証情報の取得
 const getAuth = () => useAuthUser();
+
 const router = useRouter();
 
 // 前のページに戻る関数
 const goBack = () => {
-    if (window.history.length > 1) {
+    if (typeof window !== 'undefined' && window.history.length > 1) {
         router.back();
     } else {
-        router.push('/'); // 履歴がなければトップへ
+        router.push('/timeline'); // 履歴がなければタイムラインへ
     }
 };
 
-defineExpose({ refresh });
-
+// ログイン状態の判定
 const isUserLoggedIn = () => getAuth().isLoggedIn.value;
 const isUserAuthReady = () => getAuth().isAuthReady.value;
 </script>

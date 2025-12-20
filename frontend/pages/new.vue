@@ -14,8 +14,15 @@
 
       <!-- テキスト入力エリア -->
       <div class="body-wrapper">
-        <textarea id="body" class="sticky-note" v-model="body" required :disabled="!isLoggedIn || isSubmitting"
-          :style="currentBgStyle"></textarea>
+        <div class="sticky-note" :style="currentBgStyle">
+          <div class="tanka-inputs">
+            <div v-for="(line, index) in lines" :key="index" class="input-line">
+              <input v-model="lines[index]" :placeholder="placeholders[index]" :maxlength="maxChars[index]"
+                :disabled="!isLoggedIn || isSubmitting" type="text" class="tanka-field" />
+              <span class="char-counter">{{ lines[index].length }}/{{ maxChars[index] }}</span>
+            </div>
+          </div>
+        </div>
 
         <!-- 共有ボタン（現状は機能なし） -->
         <button type="button" class="share-btn" aria-label="共有" @click="onShareClick">
@@ -85,6 +92,10 @@ const body = ref('');
 const isSubmitting = ref(false);
 const successMessage = ref('');
 const errorMessage = ref('');
+
+const lines = ref(['', '', '', '', '']);
+const maxChars = [9, 11, 9, 11, 11];
+const placeholders = ['五', '七', '五', '七', '七'];
 
 // 背景切替用の配列（色または将来の画像URLを格納します）
 const text_backgrounds = [
@@ -185,13 +196,20 @@ const onShareClick = async () => {
 
   try {
     window.open(xUrl, '_blank');
-    
+
   } catch (err) {
     console.error('共有エラー:', err);
   }
 };
 
 const submitPost = async () => {
+  if (lines.value.every(l => l.trim() === '')) {
+    errorMessage.value = '内容を入力してください。';
+    return;
+  }
+
+  const combinedBody = lines.value.filter(l => l.trim() !== '').join('\n');
+
   // 認証状態のチェック
   if (!isLoggedIn.value || !uid.value) {
     errorMessage.value = '投稿するにはログインが必要です。';
@@ -206,22 +224,15 @@ const submitPost = async () => {
   errorMessage.value = '';
 
   try {
-    const { $firestore } = useNuxtApp(); // 関数内で $firestore を取得
+    const { $firestore } = useNuxtApp();
     const postsCollection = collection($firestore, 'posts');
     await addDoc(postsCollection, {
-      body: body.value,
+      body: combinedBody, // 結合したテキストを保存
       userId: uid.value,
       createdAt: serverTimestamp(),
       background: text_backgrounds[bgIndex.value]
     });
     router.push('/timeline');
-
-    successMessage.value = '投稿が完了しました！';
-    title.value = '';
-    body.value = '';
-    // 投稿一覧へリダイレクト（任意）
-    // router.push('/');
-
   } catch (error) {
     console.error("投稿エラー:", error);
     errorMessage.value = '投稿エラー: ' + error.message;
@@ -285,6 +296,39 @@ const submitPost = async () => {
 .sticky-note:focus {
   outline: none;
   box-shadow: none;
+}
+
+.tanka-inputs {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  height: 100%;
+  width: 100%;
+}
+
+.input-line {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px dotted rgba(0, 0, 0, 0.1);
+  /* ガイド線 */
+  padding: 4px 0;
+}
+
+.tanka-field {
+  flex: 1;
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  font-family: inherit;
+  outline: none;
+  color: #2f1000;
+}
+
+.char-counter {
+  font-size: 10px;
+  color: #999;
+  margin-left: 8px;
+  min-width: 25px;
 }
 
 .body-wrapper {

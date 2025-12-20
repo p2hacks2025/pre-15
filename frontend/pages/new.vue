@@ -172,8 +172,23 @@ const nextBg = () => {
   bgIndex.value = (bgIndex.value + 1) % text_backgrounds.length;
 };
 
-const onShareClick = () => {
+const onShareClick = async () => {
   console.log('共有ボタンが押されました');
+  /* 現在選択されている背景の色や情報を取得 */
+  const currentBg = text_backgrounds[bgIndex.value];
+  const bgDescription = currentBg.type === 'color' ? `背景色：${currentBg.color}` : '画像背景';
+  const content = body.value || "（本文なし）";
+  const shareText = `${content}%0A%0Aみんなも「てかマジ」で日々のキラキラを共有しよう！%0A#p2hacks  #てかマジ%0A`;
+  const shareUrl = 'https://google.com';
+  /*X専用リンク*/
+  const xUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText.replace(/%0A/g, '\n'))}&url=${encodeURIComponent(shareUrl)}`;
+
+  try {
+    window.open(xUrl, '_blank');
+    
+  } catch (err) {
+    console.error('共有エラー:', err);
+  }
 };
 
 const submitPost = async () => {

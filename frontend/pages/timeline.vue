@@ -4,15 +4,14 @@
       <NuxtLink to="/setting" class="hanbargarbar">
         <img src="/images/hanbargarbar-icon.png" alt="はんばーがーば" />
       </NuxtLink>
-      <NuxtLink to="/mypost">>> 自分の投稿を管理する</NuxtLink>
+      <NuxtLink v-if="isUserLoggedIn()" to="/mypost">>> 自分の投稿を管理する</NuxtLink>
     </header>
-    <NuxtLink to="/new" class="floating-button">
-      <img src="/images/newpost-icon.png" alt="新規投稿" />
-    </NuxtLink>
-
     <p v-if="isUserLoggedIn()">
       <NuxtLink to="/favorites">>> 自分がいいねした投稿を見る</NuxtLink>
     </p>
+    <NuxtLink to="/new" class="floating-button">
+      <img src="/images/newpost-icon.png" alt="新規投稿" class="nav-icon-img" />
+    </NuxtLink>
 
     <div v-if="pending || !favoritesReady" class="loading">
       <img :src="loadImg" alt="読み込み中" class="loading-image" />
@@ -21,18 +20,22 @@
     <p v-else-if="error">投稿データの読み込み中にエラーが発生しました: {{ error?.message || String(error) }}</p>
 
     <div v-else-if="posts && posts.length > 0" class="post-list">
-      <div v-for="post in posts" :key="post.id" class="post-item">
-        <p class="post-sentence">{{ post.body }}</p><button @click="toggleFavorite(post.id)"
-          :disabled="!isUserLoggedIn()" class="favorite-button">
-          {{ favorites[post.id] ? '❤️' : '🤍' }}
+      <div v-for="post in posts" :key="post.id" class="post-wrapper">
+        <div class="post-item" :style="getPostStyle(post)">
+          <p class="post-body">{{ post.body }}</p>
+        </div>
+      <div class="side-action">
+        <button @click="toggleFavorite(post.id)" :disabled="!isUserLoggedIn()" class="favorite-btn-img">
+          <img 
+            :src="favorites[post.id] ? '/images/favorite.png' : '/images/nonFavorite.png'"
+              alt="いいね" 
+            class="fav-icon-size"
+          />
         </button>
-
+        </div>
 
       </div>
     </div>
-    <p v-else>トキメキはまだ届いていません</p>
-    <footer class="main-footer"></footer>
-
   </div>
 </template>
 
@@ -112,6 +115,27 @@ const fetchFavorites = async () => {
     favoritesReady.value = true;
   }
 }
+
+const getPostStyle = (post) => {
+  // backgroundデータがない場合（古い投稿など）はデフォルト色を返す
+  if (!post || !post.background) {
+    return { backgroundColor: '#FFF8E6' }; 
+  }
+
+  const b = post.background;
+  
+  // 画像タイプの場合
+  if (b.type === 'image' && b.url) {
+    return {
+      backgroundImage: `url(${b.url})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center'
+    };
+  }
+  
+  // カラータイプの場合
+  return { backgroundColor: b.color };
+};
 
 // クライアントサイドでの実行を保証
 onMounted(() => {
@@ -194,25 +218,21 @@ const isUserAuthReady = () => getAuth().isAuthReady.value;
 }
 
 .main-header {
-  /*background: #B4EBE6;*/
   position: sticky;
-  /* スクロールしても上部に残る */
   top: 0;
   width: 100%;
   z-index: 100;
-  /*border-bottom: 80px solid #B4EBE6;*/
   margin-bottom: 20px;
 }
 
 .hanbargarbar {
   width: 80px;
-  /* お好みのサイズに調整してください */
   height: 80px;
   top: 160px;
   left: 60px;
-}
+  }
 
-/*新規作成ぼたん*/
+  /*新規作成ぼたん*/
 .floating-button {
   position: fixed;
   /* 画面に対して固定位置にする */
@@ -259,58 +279,65 @@ const isUserAuthReady = () => getAuth().isAuthReady.value;
 
 /* 全体 */
 .post-list {
-  /*max-width: 600px;    /* 投稿の最大横幅を制限 */
-  margin: 0 auto;
-  /* 上下0、左右を自動計算（これで中央に寄る） */
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
   padding: 50px;
-  /* 端に少し余白を作る */
 }
 
-/* 2. 各投稿カードのスタイル */
+/* 投稿カードとボタンを横に並べるためのラッパー */
+.post-wrapper {
+  display: flex;
+  align-items: flex-end; /* ボタンを下揃えにする場合。中央なら center */
+  gap: 10px; /* カードとボタンの隙間 */
+  width: 100%;
+}
+
+/* --- 投稿カードのデザイン --- */
 .post-item {
-  white-space: pre-wrap;
-  background-color: #B4EBE680;
-  /* 透けさせる */
-  /*background-color: #FBF8EF;*/
-  border: 1px solid #FFB433;
-  border-radius: 20px;
-  /* 角を丸く */
+  border: 0.3px solid #2f1000; /* コンマを消し、solid を追加しました */
+  flex: 1; 
   padding: 25px;
-  margin-bottom: 20px;
-  /* 投稿ごとの間隔 */
-  text-align: left;
-  /* 文章自体は左揃えにする（読みやすさのため） */
-  /*box-shadow: 0 2px 4px rgba(0,0,0,0.3); /* 軽い影をつけて浮かせる */
+  border-radius: 25px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s; /* せっかくなのでここにも入れておきます */
 }
 
-.post-sentence {
-  font-size: 20px;
-}
-
-/* 3. タイトルなどの装飾 */
-h3 {
-  margin-top: 0;
-  color: #333;
-}
-
-/* 4. いいねボタンの見た目 */
-.favorite-button {
-  background: white;
-  border: 1px solid #ff4d4f;
-  color: #ff4d4f;
-  padding: 5px 15px;
-  border-radius: 20px;
+/* --- いいねボタン（画像）の調整エリア --- */
+.favorite-btn-img {
+  background: none;
+  border: none;
+  padding: 0;
   cursor: pointer;
-  transition: all 0.2s;
 }
 
-.favorite-button:hover {
-  background: #fff1f0;
+/* ★★★ ここで「いいね」画像のサイズを自由に調整してください ★★★ */
+.fav-icon-size {
+  width: 32px;  /* 横幅 */
+  height: 32px; /* 縦幅 */
+  object-fit: contain;
 }
 
-.favorite-button:disabled {
-  border-color: #ccc;
-  color: #ccc;
-  cursor: not-allowed;
+/* --- 投稿ボタン（フローティング）のサイズ修正 --- */
+.floating-button {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  z-index: 100;
+}
+
+/* ★★★ ここで「新規投稿」ボタンのサイズを調整してください ★★★ */
+.nav-icon-img {
+  width: 60px;  /* もとのサイズに合わせて調整してください */
+  height: 60px;
+  object-fit: contain;
+}
+
+.post-body {
+  white-space: pre-wrap;
+  font-size: 16px;
 }
 </style>

@@ -1,46 +1,49 @@
 <template>
-  <div class="page-container">
-    <header class="main-header">
-      <div class="header-top">
-        <button class="back-button" @click="goSetting">
-          <img :src="backArrow" alt="戻る" class="back-icon-img" />
-        </button>
-        <h1 class="header-title">自分の投稿一覧</h1>
-      </div>
-    </header>
-
-    <div v-if="!isUserAuthReady()" class="loading">
-      <p>認証情報を読み込み中です...</p>
-    </div>
-
-    <div v-else-if="!isUserLoggedIn()">
-      <p>自分の投稿を見るにはログインが必要です。</p>
-      <p>
-        <NuxtLink to="/auth">ログイン / 新規登録</NuxtLink>
-      </p>
-    </div>
-
-    <div v-if="isUserLoggedIn() && pending" class="loading">
-      <img :src="loadImg" alt="読み込み中" class="loading-image" />
-      <p>データを読み込み中です...</p>
-    </div>
-
-    <p v-else-if="error">データの読み込み中にエラーが発生しました: {{ error.message }}</p>
-
-    <div v-else-if="posts && posts.length > 0" class="post-list">
-      <div v-for="post in posts" :key="post.id" class="post-wrapper">
-        <div class="post-item" :style="getPostStyle(post)">
-          <p class="post-body">{{ post.body }}</p>
-        </div>
-        <div class="side-action">
-          <button @click="deletePost(post.id)" :disabled="!isUserLoggedIn()" class="trash-btn-img">
-            <img :src="'/images/trashcan.png'" alt="削除" class="trash-icon-size" />
+  <div class="hero-container">
+    <div class="page-container">
+      <div class="fixed-background"></div>
+      <header class="main-header">
+        <div class="header-top">
+          <button class="back-button" @click="goSetting">
+            <img :src="backArrow" alt="戻る" class="back-icon-img" />
           </button>
+          <h1 class="header-title">自分の投稿一覧</h1>
+        </div>
+      </header>
+
+      <div v-if="!isUserAuthReady()" class="loading">
+        <p>認証情報を読み込み中です...</p>
+      </div>
+
+      <div v-else-if="!isUserLoggedIn()">
+        <p>自分の投稿を見るにはログインが必要です。</p>
+        <p>
+          <NuxtLink to="/auth">ログイン / 新規登録</NuxtLink>
+        </p>
+      </div>
+
+      <div v-if="isUserLoggedIn() && pending" class="loading">
+        <img :src="loadImg" alt="読み込み中" class="loading-image" />
+        <p>データを読み込み中です...</p>
+      </div>
+
+      <p v-else-if="error">データの読み込み中にエラーが発生しました: {{ error.message }}</p>
+
+      <div v-else-if="posts && posts.length > 0" class="post-list">
+        <div v-for="post in posts" :key="post.id" class="post-wrapper">
+          <div class="post-item" :style="getPostStyle(post)">
+            <p class="post-body">{{ post.body }}</p>
+          </div>
+          <div class="side-action">
+            <button @click="deletePost(post.id)" :disabled="!isUserLoggedIn()" class="trash-btn-img">
+              <img :src="'/images/trashcan.png'" alt="削除" class="trash-icon-size" />
+            </button>
+          </div>
         </div>
       </div>
-    </div>
 
-    <p v-else class="empty-message">まだ自分で投稿した記事はありません。</p>
+      <p v-else class="empty-message">まだ自分で投稿した記事はありません。</p>
+    </div>
   </div>
 </template>
 
@@ -159,17 +162,32 @@ watch([() => getAuth().isAuthReady.value, () => getAuth().uid.value], () => {
 </script>
 
 <style scoped>
-.page-container {
+.fixed-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
   background-image: url('/images/background-1.png');
   background-size: cover;
   background-position: center;
-  background-attachment: fixed;
   background-repeat: no-repeat;
+  pointer-events: none;
+}
+
+.hero-container {
+  width: 100%;
+  min-height: 100vh;
+}
+
+.page-container {
   width: 100vw;
   min-height: 100vh;
   margin: 0;
   padding: 0;
   overflow-x: hidden;
+  background-color: transparent;
 }
 
 .main-header {

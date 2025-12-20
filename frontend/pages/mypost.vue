@@ -1,13 +1,18 @@
 <template>
-  <div class="mypost-container">
-    <h1>自分の投稿一覧</h1>
-    <p>
-      <NuxtLink to="/timeline">← 投稿一覧に戻る</NuxtLink>
-    </p>
+  <div class="page-container">
+    <header class="main-header">
+      <div class="header-top">
+        <button class="back-button" @click="goSetting">
+          <img :src="backArrow" alt="戻る" class="back-icon-img" />
+        </button>
+        <h1 class="header-title">自分の投稿一覧</h1>
+      </div>
+    </header>
 
-    <div v-if="!isUserAuthReady()">
+    <div v-if="!isUserAuthReady()" class="loading">
       <p>認証情報を読み込み中です...</p>
     </div>
+
     <div v-else-if="!isUserLoggedIn()">
       <p>自分の投稿を見るにはログインが必要です。</p>
       <p>
@@ -19,132 +24,233 @@
       <img :src="loadImg" alt="読み込み中" class="loading-image" />
       <p>データを読み込み中です...</p>
     </div>
+
     <p v-else-if="error">データの読み込み中にエラーが発生しました: {{ error.message }}</p>
 
-    <div v-else-if="myPosts.length > 0" class="post-list">
-      <div v-for="post in myPosts" :key="post.id" class="post-item">
-        <h3>{{ post.title }}</h3>
-        <p>{{ post.body }}</p>
-        <small>投稿日時: {{ formatTimestamp(post.createdAt) }}</small>
+    <div v-else-if="posts && posts.length > 0" class="post-list">
+      <div v-for="post in posts" :key="post.id" class="post-wrapper">
+        <div class="post-item" :style="getPostStyle(post)">
+          <p class="post-body">{{ post.body }}</p>
+        </div>
       </div>
     </div>
 
-    <p v-else>まだ自分で投稿した記事はありません。</p>
+    <p v-else class="empty-message">まだ自分で投稿した記事はありません。</p>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue';
 import { useAuthUser } from '../composables/useAuthUser';
+import { onMounted, ref, watch } from 'vue';
 import {
   collection,
   getDocs,
+  orderBy,
   query,
   where,
-  orderBy
+  doc,
+  setDoc,
+  deleteDoc,
+  serverTimestamp
 } from 'firebase/firestore';
 
-// 認証情報の取得（SSRクラッシュ回避のため関数化）
 const getAuth = () => useAuthUser();
 const isUserLoggedIn = () => getAuth().isLoggedIn.value;
 const isUserAuthReady = () => getAuth().isAuthReady.value;
 
-const myPosts = ref([]);
+const posts = ref([]);
 const pending = ref(true);
 const error = ref(null);
-const loadImg = 'images/load.webp';
+const favorites = ref({});
+const favoritesReady = ref(false);
 
-// 自分の投稿を取得する関数
+const router = useRouter();
+
+const loadImg = '/images/load.webp';
+const backArrow = '/images/back-arrow.png';
+
+const goSetting = () => {
+  router.push('/setting');
+};
+
+// --- ホームと共通のスタイル取得関数 ---
+const getPostStyle = (post) => {
+  if (!post || !post.background) {
+    return { backgroundColor: '#FFF8E6' };
+  }
+  const b = post.background;
+  if (b.type === 'image' && b.url) {
+    return {
+      backgroundImage: `url(${b.url})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center'
+    };
+  }
+  return { backgroundColor: b.color };
+};
+
 const fetchMyPosts = async () => {
   const { uid, isLoggedIn } = getAuth();
-
   if (!isLoggedIn.value || !uid.value) {
     pending.value = false;
     return;
   }
 
   pending.value = true;
-  error.value = null;
-
   try {
     const { $firestore } = useNuxtApp();
-    const postsCollection = collection($firestore, 'posts');
-
-    // ★★★ userId が 自分のUID と一致するものだけをクエリ ★★★
     const q = query(
-      postsCollection,
+      collection($firestore, 'posts'),
       where('userId', '==', uid.value),
       orderBy('createdAt', 'desc')
     );
-
     const querySnapshot = await getDocs(q);
-    myPosts.value = querySnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }));
-
+    posts.value = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
   } catch (e) {
-    console.error("自分の投稿の取得エラー:", e);
+    console.error(e);
     error.value = e;
   } finally {
     pending.value = false;
   }
 };
 
-// クライアント側で実行
-onMounted(() => {
-  if (isUserLoggedIn()) {
-    fetchMyPosts();
+// いいね情報の取得（ホームと共通）
+const fetchFavorites = async () => {
+  const { uid, isLoggedIn } = getAuth();
+  if (!isLoggedIn.value || !uid.value) return;
+  try {
+    const { $firestore } = useNuxtApp();
+    const q = query(collection($firestore, 'favorites'), where('userId', '==', uid.value));
+    const snapshot = await getDocs(q);
+    const newFavorites = {};
+    snapshot.docs.forEach(d => { newFavorites[d.data().postId] = d.id; });
+    favorites.value = newFavorites;
+  } finally {
+    favoritesReady.value = true;
   }
-});
+};
 
-// ログイン状態が変わった時に再取得
+onMounted(() => { if (isUserLoggedIn()) fetchMyPosts(); });
+
 watch([() => getAuth().isAuthReady.value, () => getAuth().uid.value], () => {
   if (getAuth().isAuthReady.value && getAuth().isLoggedIn.value) {
     fetchMyPosts();
+    fetchFavorites();
   }
 }, { immediate: true });
-
-// 日時フォーマット
-const formatTimestamp = (timestamp) => {
-  if (!timestamp) return '不明';
-  if (timestamp && typeof timestamp.toDate === 'function') {
-    return timestamp.toDate().toLocaleString('ja-JP', {
-      year: 'numeric', month: '2-digit', day: '2-digit',
-      hour: '2-digit', minute: '2-digit'
-    });
-  }
-  return '日付取得エラー';
-};
 </script>
 
 <style scoped>
+.page-container {
+  background-image: url('/images/background-1.png');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  width: 100vw;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+.main-header {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  padding: 10px 0;
+}
+
+.header-top {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 10px 20px;
+}
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+.back-icon-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.header-title {
+  font-size: 18px;
+  margin: 0;
+  padding: 6px 16px;
+  border: 1.5px solid #FFB433;
+  border-radius: 20px;
+  color: #2f1000;
+  background-color: transparent;
+  display: inline-block;
+  white-space: nowrap;
+}
+
 .mypost-container {
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
 }
 
+/* --- 投稿リスト構造：ホームと統一 --- */
 .post-list {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  margin-top: 20px;
+  padding: 20px 50px;
 }
 
+.post-wrapper {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  width: 100%;
+}
+
+/* --- カードデザイン：ホームと統一 --- */
 .post-item {
-  border: 1px solid #ddd;
-  padding: 15px;
-  border-radius: 8px;
-  background-color: #fff;
+  border: 0.3px solid #2f1000;
+  flex: 1;
+  padding: 25px;
+  border-radius: 25px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
 }
 
-.post-item h3 {
-  margin-top: 0;
-  color: #333;
+.post-body {
+  white-space: pre-wrap;
+  font-size: 16px;
 }
 
-/* 読み込み中の表示 */
+/* --- いいねボタンデザイン --- */
+.favorite-btn-img {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.fav-icon-size {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+/* 読み込み中・メッセージ系 */
 .loading {
   display: flex;
   flex-direction: column;
@@ -156,7 +262,11 @@ const formatTimestamp = (timestamp) => {
 .loading-image {
   width: 120px;
   height: auto;
-  object-fit: contain;
-  margin-bottom: 12px;
+}
+
+.empty-message {
+  text-align: center;
+  margin-top: 50px;
+  color: #666;
 }
 </style>

@@ -265,9 +265,7 @@ const isUserAuthReady = () => getAuth().isAuthReady.value;
   width: 100%;
   z-index: 100;
   background-color: rgba(255, 255, 255, 0.5);
-  /* ヘッダー全体を少し透かす */
   backdrop-filter: blur(5px);
-  /* 背景をぼかすとおしゃれです */
   padding-bottom: 10px;
 }
 

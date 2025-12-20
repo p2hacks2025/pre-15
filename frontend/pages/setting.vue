@@ -1,7 +1,7 @@
 <template>
     <div class="page-container">
         <header class="main-header">
-            <a href="#" class="hanbargarbar" @click.prevent="goBack">
+            <a href="#" class="hanbargarbar" @click.prevent="goTimeline">
                 <svg xmlns="http://www.w3.org/2000/svg" height="45px" viewBox="0 -960 960 960" width="45px"
                     fill="#000000">
                     <path
@@ -42,12 +42,8 @@ const getAuth = () => useAuthUser();
 const router = useRouter();
 
 // 前のページに戻る関数
-const goBack = () => {
-    if (typeof window !== 'undefined' && window.history.length > 1) {
-        router.back();
-    } else {
-        router.push('/timeline'); // 履歴がなければタイムラインへ
-    }
+const goTimeline = () => {
+    router.push('/timeline');
 };
 
 const goMypost = () => {

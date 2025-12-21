@@ -328,7 +328,8 @@ const isUserAuthReady = () => getAuth().isAuthReady.value;
 
 /* 投稿 */
 .post-item {
-  border: 0.3px solid #2f1000;
+  /*border: 0.3px solid #2f1000;*/
+  border: none;
   flex: 1;
   padding: 25px;
   border-radius: 25px;

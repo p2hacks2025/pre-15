@@ -332,7 +332,8 @@ const submitPost = async () => {
   aspect-ratio: 1 / 1;
   max-height: 60vh;
   background-color: #FBF8EF;
-  border: 1px solid #FFB433;
+  /*border: 1px solid #2f1000;*/
+  border: none;
   align-content: center;
   padding: 30px;
   border-radius: 6px;

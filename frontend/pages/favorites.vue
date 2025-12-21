@@ -3,9 +3,12 @@
     <div class="fixed-background"></div>
     <div class="page-container">
       <header class="main-header">
-        <NuxtLink to="/setting" class="hanbargarbar">
-          <img src="/images/hanbargarbar-icon.png" alt="メニュー" />
-        </NuxtLink>
+        <div class="header-top">
+          <NuxtLink to="/setting" class="hanbargarbar">
+            <img src="/images/hanbargarbar-icon.png" alt="メニュー" />
+          </NuxtLink>
+        </div>
+
         <nav class="tab-menu">
           <NuxtLink to="/timeline" class="tab-item" active-class="active">
             ホーム
@@ -14,6 +17,12 @@
             お気に入り
           </NuxtLink>
         </nav>
+
+        <div class="header-bottom">
+          <NuxtLink to="/favorites" class="reload" @click.prevent="fetchFavoritePosts()">
+            <img src="/images/reload.png" alt="更新" class="reload-icon-img" />
+          </NuxtLink>
+        </div>
       </header>
 
       <div v-if="!isAuthReady" class="loading">
@@ -163,18 +172,19 @@ watch([isAuthReady, uid], () => {
   min-height: 100vh;
   margin: 0;
   padding: 0;
-  overflow-x: hidden;
-  background-color: transparent;
 }
 
 .tab-menu {
   display: flex;
   justify-content: center;
-  background-color: rgba(255, 248, 230, 0.8);
-  margin: 0 50px;
+  background-color: rgba(255, 248, 230, 0.9);
+  width: 85%;
+  max-width: 400px;
   border-radius: 15px;
   overflow: hidden;
   border: 1px solid #B4EBE6;
+  margin: 0;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .tab-item {
@@ -184,7 +194,6 @@ watch([isAuthReady, uid], () => {
   text-decoration: none;
   color: #666;
   font-weight: bold;
-  transition: all 0.3s;
   font-size: 14px;
 }
 
@@ -198,19 +207,83 @@ watch([isAuthReady, uid], () => {
   border-bottom: 3px solid #FFB433;
 }
 
+/* 3段目：更新ボタン */
+.header-bottom {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
 .main-header {
   position: sticky;
   top: 0;
   width: 100%;
-  z-index: 100;
-  padding-bottom: 10px;
+  z-index: 1100;
+  padding: 15px 0 10px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  background-color: rgba(255, 250, 240, 0.7);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.header-center-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.header-top {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  padding-left: 20px;
 }
 
 .hanbargarbar {
-  width: 80px;
-  height: 80px;
-  top: 160px;
-  left: 60px;
+  position: absolute;
+  left: 20px;
+  top: 15px;
+}
+
+.hanbargarbar img {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+}
+
+.reload {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.reload-icon-img {
+  width: 35px;
+  height: 35px;
+  object-fit: contain;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.reload-icon-img:active {
+  transform: rotate(180deg);
+}
+
+/* 元のコードにあった不要なスタイル（top/left固定値）は削除または上書き */
+.hanbargarbar,
+.reload {
+  top: auto;
+  left: auto;
+  position: static;
+  /* 絶対配置を解除 */
 }
 
 /* 新規作成 */

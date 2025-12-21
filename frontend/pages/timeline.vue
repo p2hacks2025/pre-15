@@ -312,8 +312,8 @@ const isUserAuthReady = () => getAuth().isAuthReady.value;
 }
 
 .hanbargarbar img {
-  width: 50px;
-  height: 50px;
+  width: 30px;
+  height: 30px;
   object-fit: contain;
 }
 

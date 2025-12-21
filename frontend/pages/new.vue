@@ -99,10 +99,13 @@ const placeholders = ['◯◯◯◯◯', '◯◯◯◯◯◯◯', '◯◯◯◯�
 
 // 背景切替用の配列（色または将来の画像URLを格納します）
 const text_backgrounds = [
-  { id: 0, type: 'color', color: '#FFF8E6' },
-  { id: 1, type: 'color', color: '#FBF8EF' },
-  { id: 2, type: 'color', color: '#FFF0D9' },
-  { id: 3, type: 'color', color: '#F5F5F5' }
+  { id: 0, type: 'color', color: '#ffd093' },
+  { id: 1, type: 'color', color: '#f7dbf0' },
+  { id: 2, type: 'color', color: '#ffc5c5' },
+  { id: 3, type: 'color', color: '#ffeeaa' },
+  { id: 4, type: 'color', color: '#Fcf3c4' },
+  { id: 5, type: 'color', color: '#d6f7f7' },
+  { id: 6, type: 'color', color: '#dadff9' },
   // { type: 'image', url: '/images/bg1.jpg' }
 ];
 
@@ -183,9 +186,41 @@ const nextBg = () => {
 
 const onShareClick = async () => {
   console.log('共有ボタンが押されました');
+
+  if (!isLoggedIn.value || !uid.value) {
+    errorMessage.value = '投稿するにはログインが必要です。';
+    router.push('/auth');
+    return;
+  }
+
+  // 未入力の場合共有不可
+  if (lines.value.every(l => l.trim() === '')) {
+    errorMessage.value = '内容を入力してください。';
+    return;
+  }
+
+  const filledLines = lines.value.map(l => l.trim()).filter(l => l !== '');
+  const lineCount = filledLines.length;
+
+  // 3行（575）でもなく、5行（57577）でもない場合はエラー
+  if (lineCount !== 3 && lineCount !== 5) {
+    errorMessage.value = '「五・七・五」または「五・七・五・七・七」の形式で入力してください。';
+    return;
+  }
+
+  // 最初の行から数えて lineCount 分がすべて埋まっているか確認
+  for (let i = 0; i < lineCount; i++) {
+    if (lines.value[i].trim() === '') {
+      errorMessage.value = '上から順番に行を埋めてください。';
+      return;
+    }
+  }
+
+  const combinedBody = filledLines.join('\n');
+
   const currentBg = text_backgrounds[bgIndex.value];
   const bgDescription = currentBg.type === 'color' ? `背景色：${currentBg.color}` : '画像背景';
-  const content = body.value || "（本文なし）";
+  const content = combinedBody || "（本文なし）";
   const shareText = `${content}%0A%0Aみんなも「てかマジ」で日々のキラキラを共有しよう！%0A#p2hacks  #てかマジ  #魚眼れんズ%0A`;
   const shareUrl = 'https://gyoganlens-2ce04.web.app/';
   /*X専用リンク*/
@@ -297,7 +332,8 @@ const submitPost = async () => {
   aspect-ratio: 1 / 1;
   max-height: 60vh;
   background-color: #FBF8EF;
-  border: 1px solid #FFB433;
+  /*border: 1px solid #2f1000;*/
+  border: none;
   align-content: center;
   padding: 30px;
   border-radius: 6px;
